@@ -10,17 +10,17 @@ class cashResponse:
  str_response = ""
  orderid = ""
  amount = 0
- type = ''
- def __init__(self, issuccess, ordernum, errormsg, raw_resp, str_resp, billedamount, type='unknown'):
+ mytype = ''
+ def __init__(self, issuccess, ordernum, errormsg, raw_resp, str_resp, billedamount, mytype='unknown'):
   self.success = issuccess
   self.errorMessage = errormsg
   self.raw_response = raw_resp
   self.str_response = str_resp
   self.amount = billedamount
   self.orderid = ordernum
-  self.type = type
+  self.mytype = mytype
  def __str__(self):
-  return "cashResponse("+repr(self.success)+", "+repr(self.orderid)+", "+repr(self.errorMessage)+", "+repr(self.raw_response)+", "+repr(self.str_response)+", "+repr(self.amount)+", "+repr(self.type)+")"
+  return "cashResponse("+repr(self.success)+", "+repr(self.orderid)+", "+repr(self.errorMessage)+", "+repr(self.raw_response)+", "+repr(self.str_response)+", "+repr(self.amount)+", "+repr(self.mytype)+")"
 
 class Processor:
  realname="Generic Processor"
