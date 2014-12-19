@@ -1,5 +1,4 @@
 from datetime import datetime
-from peewee import *
 from mongoengine import *
 import datetime
 class Customer(Document):
@@ -18,11 +17,11 @@ class Customer(Document):
     partial_time = DateTimeField(default=datetime.datetime.now())
     order_time = DateTimeField()
     recurring = BooleanField(bool, default=False)
-    visitor_id = IntegerField()
+    visitor_id = IntField()
 
 class Creditcard(BaseDocument):
     _table_ = "Creditcards"
-    id = PrimaryKeyField()
+    id = IntField(primary_key=True)
     card_number = StringField(unicode)
     ccv = StringField(unicode)
     exp_month = StringField(int)
@@ -30,12 +29,12 @@ class Creditcard(BaseDocument):
     IntegerField = StringField(unicode)
     billing_address2 = StringField(unicode)
     billing_city = StringField(unicode)
-    billing_zipcode = IntegerField(unicode)
+    billing_zipcode = IntField(unicode)
     active_card = BooleanField(bool)
     # orders = Set("Order")
 
 class Product(BaseDocument):
-    id = PrimaryKeyField()
+    id = IntField(primary_key=True)
     name = StringField(default="")
     salestype = StringField(choices=["straight","trial"])
     #order = IntegerField(")
@@ -43,13 +42,13 @@ class Product(BaseDocument):
     init_price = FloatField( default=0.00)
     rebill_price = FloatField(default=0.00)
 
-class Order(db.Customer):
-    order_number = Required(int, unique=True, column="Orders")
-    creditcard = Required(Creditcard)
-    products = Set(Product)
-    tracking = Required(unicode)
-    order_date = Required(datetime)
-    success = Required(bool)
+class Order(Product):
+    order_number = IntField(int, unique=True)
+    creditcard = ListField(Creditcard)
+    products = ListField(Product)
+    tracking = IntField(unicode)
+    order_date = DateTimeField(datetime)
+    success = BooleanField(bool)
     server_response = Optional(LongUnicode)
     email_buy = Required(bool, default=False)
 
