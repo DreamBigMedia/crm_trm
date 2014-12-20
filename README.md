@@ -1,3 +1,3 @@
-crm_trm
+Thug Revenue Manager
 =======
-and then we are hax teh planet
+can we just skip to version v4.2.0 already?
