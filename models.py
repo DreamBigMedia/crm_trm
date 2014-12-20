@@ -1,11 +1,13 @@
 from datetime import datetime
 from mongoengine import *
 import datetime
-class Customer(Document):
 
+connect('trm')
+
+class Customer(Document):
  fname = StringField()
  lname = StringField( )
- card = StringField("Creditcard")
+ card = IntField() # card id
  email = EmailField()
  ship_address1 = StringField()
  ship_address2 = StringField()
@@ -19,21 +21,20 @@ class Customer(Document):
  recurring = BooleanField(default=False)
  visitor_id = IntField()
 
-class Creditcard(BaseDocument):
+class Creditcard(Document):
  _table_ = "Creditcards"
- id = IntField(primary_key=True)
  card_number = StringField()
  ccv = StringField()
  exp_month = StringField()
  exp_year = StringField()
- IntegerField = StringField()
+ billing_address1 = StringField()
  billing_address2 = StringField()
  billing_city = StringField()
  billing_zipcode = IntField()
  active_card = BooleanField(default=False)
  # orders = Set("Order")
 
-class Product(BaseDocument):
+class Product(Document):
  id = IntField(primary_key=True)
  name = StringField(default="")
  salestype = StringField(choices=["straight","trial"])
@@ -42,17 +43,17 @@ class Product(BaseDocument):
  init_price = FloatField( default=0.00)
  rebill_price = FloatField(default=0.00)
 
-class Order(Product):
- order_number = IntField(int, unique=True)
- creditcard = ListField(Creditcard)
- products = ListField(Product)
+class Order(Document):
+ order_number = IntField(unique=True)
+ creditcard = IntField()
+ products = StringField()
  tracking = IntField()
- order_date = DateTimeField(datetime)
- success = BooleanField(bool)
+ order_date = DateTimeField()
+ success = BooleanField()
  server_response = StringField(default="")
- email_buy = BooleanField( default=False)
+ email_buy = BooleanField(default=False)
 
-class Email(BaseDocument):
+class Email(Document):
  id = EmailField(primary_key=True)
  partial_id = IntField()
  optin_time = DateTimeField(datetime)
@@ -61,14 +62,14 @@ class Email(BaseDocument):
  followup2 = BooleanField( default=False)
  followup3 = BooleanField(default=False)
 
-class Visitor(BaseDocument):
+class Visitor(Document):
  id = IntField(primary_key=True)
- c1 = StringField(str)
+ c1 = StringField()
  c2 = StringField()
  c3 = StringField()
  c4 = StringField()
  c5 = StringField()
- trafficsource = StringField(, default="unknown")
+ trafficsource = StringField(default="unknown")
  conversion = BooleanField(default=False)
  engage = BooleanField()
  useragent = StringField()

@@ -1,8 +1,9 @@
 from flask import request
 import processing
 import models
+import json
 
-from app import app
+from mainapp import app
 
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
@@ -21,8 +22,8 @@ def apiUpdateCustomer(cid):
 @app.route("/api/card", methods=["POST"])
 def apiCard():
     newcard = models.Creditcard(billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=request.form.get('billing_zipcode'), activecard=bool(request.form.get('activecard')))
-    newcard.save(    )
-    return newcard.id
+    newcard.save()
+    return str(newcard.id)
 
 @app.route("/api/update/card/<int:cid>", methods=["POST"])
 def apiUpdateCard(cid):
@@ -30,7 +31,7 @@ def apiUpdateCard(cid):
     for x in request.args['fields'].split(','):
         oldcard[x] = request.form[x]
     oldcard.save()
-    return oldcard
+    return json.dumps(oldcard)
 
 @app.route("/api/orderWithCard/<int:customerid>")
 def apiOrderWithCard(customerid):
@@ -68,7 +69,7 @@ def apiOrderWithCard(customerid):
     oldguy.save()
     return {"card": newcard.id, "cc_response": process.raw_response}
 
-@app.route("/api/order/<int:customerid>/<int:cardid>")
+@app.route("/api/order/<int:customerid>/<int:cardid>", methods=["POST"])
 def apiOrderNoCard(customerid, cardid):
     try:
         oldcard = models.Creditcard.objects(id=cardid)[0]
