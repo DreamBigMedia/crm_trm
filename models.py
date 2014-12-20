@@ -30,12 +30,12 @@ class Creditcard(Document):
  billing_address1 = StringField()
  billing_address2 = StringField()
  billing_city = StringField()
+ billing_state = StringField()
  billing_zipcode = IntField()
  active_card = BooleanField(default=False)
  # orders = Set("Order")
 
 class Product(Document):
- id = IntField(primary_key=True)
  name = StringField(default="")
  salestype = StringField(choices=["straight","trial"])
  #order = IntegerField(")
@@ -44,18 +44,16 @@ class Product(Document):
  rebill_price = FloatField(default=0.00)
 
 class Order(Document):
- order_number = IntField(unique=True)
- creditcard = IntField()
+ order_number = SequenceField(unique=True)
+ creditcard = StringField()
  products = StringField()
- tracking = IntField()
+ tracking = StringField()
  order_date = DateTimeField()
  success = BooleanField()
  server_response = StringField(default="")
  email_buy = BooleanField(default=False)
 
 class Email(Document):
- id = EmailField(primary_key=True)
- partial_id = IntField()
  optin_time = DateTimeField(datetime)
  purchased = BooleanField(default=False)
  followup = BooleanField(default=False)
@@ -63,7 +61,6 @@ class Email(Document):
  followup3 = BooleanField(default=False)
 
 class Visitor(Document):
- id = IntField(primary_key=True)
  c1 = StringField()
  c2 = StringField()
  c3 = StringField()

@@ -128,7 +128,7 @@ class uCrm(Processor):
          'misc1': self.card['c1'],
          'misc2': self.card['c2'],
          'misc3': self.card['c3'],
-         'test': self.card['test']}
+         'test': '1'}
   try:
    retval = requests.post('https://gateway.sslapplications.net/ynMklop/', pdata).text
   except:

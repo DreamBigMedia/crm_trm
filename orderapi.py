@@ -1,7 +1,5 @@
 from flask import request
-import processing
-import models
-import json
+import processing, models, json, datetime
 
 from mainapp import app
 
@@ -11,29 +9,29 @@ def apiCustomer():
     newguy.save()
     return str(newguy.id)
 
-@app.route("/api/update/customer/<int:cid>", methods=["POST"])
+@app.route("/api/update/customer/<cid>", methods=["POST"])
 def apiUpdateCustomer(cid):
     oldguy = models.Customer.orders(id=cid)
     for x in request.args['fields'].split(','):
         oldguy[x] = request.form[x]
     oldguy.save()
-    return oldguy
+    return str(oldguy.id)
 
 @app.route("/api/card", methods=["POST"])
 def apiCard():
-    newcard = models.Creditcard(billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=request.form.get('billing_zipcode'), activecard=bool(request.form.get('activecard')))
+    newcard = models.Creditcard(billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_state=request.form.get('billing_state'), billing_zipcode=request.form.get('billing_zipcode'), activecard=bool(request.form.get('activecard')))
     newcard.save()
     return str(newcard.id)
 
-@app.route("/api/update/card/<int:cid>", methods=["POST"])
+@app.route("/api/update/card/<cid>", methods=["POST"])
 def apiUpdateCard(cid):
     oldcard = models.Creditcard.objects(id=cid)
     for x in request.args['fields'].split(','):
         oldcard[x] = request.form[x]
     oldcard.save()
-    return json.dumps(oldcard)
+    return str(oldcard.id)
 
-@app.route("/api/orderWithCard/<int:customerid>")
+@app.route("/api/orderWithCard/<customerid>")
 def apiOrderWithCard(customerid):
     newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form['billing_address1'], billing_address2=request.form.get('billing_address2'), billing_city=request.form['billing_city'], billing_zipcode=int(request.form['billing_zipcode']))
     newcard.save()
@@ -67,21 +65,21 @@ def apiOrderWithCard(customerid):
     oldguy['card'] = newcard.id
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return {"card": newcard.id, "cc_response": process.raw_response}
+    return json.dumps({"card": str(newcard.id), "cc_response": process.raw_response})
 
-@app.route("/api/order/<int:customerid>/<int:cardid>", methods=["POST"])
+@app.route("/api/order/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(customerid, cardid):
     try:
         oldcard = models.Creditcard.objects(id=cardid)[0]
     except:
-        return {'error': "could not find card"}
+        return json.dumps({'error': "could not find card"})
     try:
         oldguy = models.Customer.objects(id=customerid)[0]
     except:
-        return {'error': "could not find customer"}
+        return json.dumps({'error': "could not find customer"})
     process = processing.uCrm({'cc_number': oldcard['card_number'],
-                                 'cc_month': oldcard['cc_month'],
-                                 'cc_year': oldcard['cc_year'],
+                                 'cc_month': oldcard['exp_month'],
+                                 'cc_year': oldcard['exp_year'],
                                  'cc_cvv': oldcard['ccv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
@@ -96,13 +94,13 @@ def apiOrderNoCard(customerid, cardid):
                                  'billingsame': bool(request.form['billingsame']),
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
-                                 'cacode': request.form['cacode'],
-                                 'affid': request.form['affid'],
+                                 'cacode': request.form.get('cacode'),
+                                 'affid': request.form.get('affid'),
                                  'c1': request.form.get('c1'),
                                  'c2': request.form.get('c2'),
                                  'c3': request.form.get('c3'),
                                  'ip': request.remote_addr,
-                                 'orderpage': request.form['orderpage']}).process()
-    neworder = models.Order(creditcard=oldcard, products=request.form['pid'], tracking=int(request.form['tracking']), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+                                 'orderpage': request.form.get('orderpage')}).process()
+    neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form.get('tracking'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
-    return {'customer': oldguy, 'neworder': neworder}
+    return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id)})
