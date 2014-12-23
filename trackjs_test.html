@@ -1,0 +1,15 @@
+<html><head><title>TRM track.js test page</title>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jquery.cookie.js"></script>
+<script type="text/javascript" src="track.js"></script>
+<script type="text/javascript">
+function dbg_loop() {
+setTimeout(dbg_loop, 1000);
+document.getElementById("dbg").innerHtml = dbg_track;
+}
+</script>
+</head>
+<body onload="dbg_loop();">
+<div id=dbg>wait plz bruh</div>
+</body>
+</html>
