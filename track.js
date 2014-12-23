@@ -19,17 +19,6 @@ function create_hidden_input(form_id,name,value)
 }
 
 
-function get_token()
-{
-token = document.getElementById('token').value;
-if (token !== null && token.value === "")
-    {
-
-    return token;
-    }
-
-}
-
 function check_cookie(name)
 {
        if($.cookie(name)==undefined)
