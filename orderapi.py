@@ -5,14 +5,14 @@ from mainapp import app
 
 @app.route('/track/')
 def track_hit():
- c1 = request.args.get('c1','', type=str)
- c2 = request.args.get('c2','', type=str)
- c3 = request.args.get('c3','',type=str)
- c4 = request.args.get('c4','',type = str)
- c5 = request.args.get('c5','',type = str)
- trafficsource = request.args.get('t1','unknown',type=str)
- l1 = request.args.get('l1','unknown',type= str)
- useragent = request.headers.get('User-Agent','unknown browser',type= str)
+ c1 = request.args.get('c1')
+ c2 = request.args.get('c2')
+ c3 = request.args.get('c3')
+ c4 = request.args.get('c4')
+ c5 = request.args.get('c5')
+ trafficsource = request.args.get('t1')
+ l1 = request.args.get('l1')
+ useragent = request.headers.get('User-Agent')
  visitor = models.Visitor(c1= c1, c2=c2,c3= c3, c4 = c4,c5=c5, trafficsource = trafficsource,
                           conversion=False,engage=False,useragent=useragent,convert=False,lander=l1)
  visitor.save()
