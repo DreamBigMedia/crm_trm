@@ -18,9 +18,6 @@ function create_hidden_input(form_id,name,value)
   $("<input name='"+name+"' id='"+name+"' type='hidden' value='"+value+"'/>").appendTo(form_ob);
 }
 
-function randNumber(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 
 function get_token()
 {
@@ -33,6 +30,17 @@ if (token !== null && token.value === "")
 
 }
 
+function check_cookie(name)
+{
+       if($.cookie(name)==undefined)
+       {
+              rand_num = randNumber();
+              $.cookie(name,rand_num, { expires: 7, path: '/' });
+       }
+         rand_num = Math.floor(Math.random() * (max - min)) + min;
+          $.cookie(name,rand_num, { expires: 7, path: '/' });
+}
+
 var landingpage_id = '1';
 var aff_id = getValue('aff_id');
 var c1 = var_aff_id;
@@ -41,15 +49,39 @@ var c3 = getValue('c3');
 var c4 = getValue('c4');
 var c5 = getValue('c5');
 var t1 = getValue('t1');
-rand_num = randNumber();
+var uniqid = check_cookie('uniqid');
+
 get_token = get_token();
+
 $.ajax({
     url: '/track/',
-    data: {'c1':c1,'c2':c3,'c4':c4,'c5':c5,'t1':'t1','l1':rand_num, '_csrf_token':get_token},
+    data: {'c1':c1,'c2':c3,'c4':c4,'c5':c5,'t1':'t1','l1':l1, 'uniqid':uniqid},
     type: 'POST',
+    xhrFields: {
+   withCredentials: true
+},
     success: function(response) {
-        console.log(response);
-    },
+           if(response)
+        {
+               var track_id = response.id[0];
+               setTimeout(function(){
+                      $.ajax({
+                            url:'/engage/',
+                            xhrFields: {
+   withCredentials: true
+},
+                            data:{'track_id':track_id,'token':uniqid},
+                            type : 'GET',
+                            success:function(response){
+                                   console.log("enaged tracked")}),
+                            }), 13000}); 
+           }
+
+              
+              
+              
+       },
+
     error: function(error) {
         console.log(error);
     }
