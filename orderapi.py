@@ -3,6 +3,31 @@ import processing, models, json, datetime
 
 from mainapp import app
 
+@app.route('/track/<int:vid>')
+def track_hit(vid):
+ v1 = request.args.get('vid','',type=int)
+ c1 = request.args.get('c1','', type=str)
+ c2 = request.args.get('c2','', type=str)
+ c3 = request.args.get('c3','',type=str)
+ c4 = request.args.get('c4','',type = str)
+ c5 = request.args.get('c5','',type = str)
+ trafficsource = request.args.get('t1','unknown',type=str)
+ l1 = request.args.get('l1','unknown',type= str)
+ useragent = request.headers.get('User-Agent','unknown browser',type= str)
+ visitor = models.Visitor(c1= c1, c2=c2,c3= c3, c4 = c4,c5=c5, trafficsource = trafficsource,
+                          conversion=False,engage=False,useragent=useragent,convert=False,lander=l1)
+ visitor.save()
+ vi = str(visitor.id)
+ return jsonify({'visitor_id':vi})
+
+@app.route('/engage/<int:vid>')
+def engage_hit(vid):
+ visitor = models.Visitor.objects.get(id=vid)
+ visitor.engaged=True
+ visitor.save()
+ vi = visitor.id
+ return jsonify({'visitor_id':vi})
+
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address1'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
