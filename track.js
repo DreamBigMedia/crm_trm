@@ -19,6 +19,10 @@ function track(url)
             });
     }
 
+function JsonpCallback(data){
+    
+    
+}
     function JsonpCallback(data){
         if (data.responseStatus == "200")
         var track_id = response.responseData.session_cookie;
@@ -30,7 +34,7 @@ function track(url)
             $.ajax({
                 url: feedApiGetJSON + feedUrl,
                 dataType: 'jsonp',
-                jsonpCallback: 'JsonpCallback'
+               jsonpCallback: 'JsonpCallback2'
             });
        
     },15000);}
