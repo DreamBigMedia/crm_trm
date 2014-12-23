@@ -62,12 +62,10 @@ $.ajax({
                             data:{'track_id':track_id,'token':uniqid},
                             type : 'GET',
                             success:function(response){
-                                   console.log("enaged tracked")}),
-                            }), 13000}); 
-           }
-
-              
-              
+                                   console.log("enaged tracked");}),
+}),13000);
+               }
+                              
               
        },
 
@@ -75,5 +73,4 @@ $.ajax({
         console.log(error);
     }
 });
-
 
