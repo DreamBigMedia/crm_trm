@@ -23,11 +23,10 @@ function check_cookie(name)
 {
        if($.cookie(name)==undefined)
        {
-              rand_num = randNumber();
+              rand_num = Math.floor(Math.random() * (max - min)) + min;
               $.cookie(name,rand_num, { expires: 7, path: '/' });
        }
-         rand_num = Math.floor(Math.random() * (max - min)) + min;
-          $.cookie(name,rand_num, { expires: 7, path: '/' });
+       return $.cookie(name);
 }
 
 var landingpage_id = '1';
@@ -40,11 +39,11 @@ var c5 = getValue('c5');
 var t1 = getValue('t1');
 var uniqid = check_cookie('uniqid');
 
-get_token = get_token();
+//get_token = get_token()
 
 $.ajax({
-    url: '/track/',
-    data: {'c1':c1,'c2':c3,'c4':c4,'c5':c5,'t1':'t1','l1':l1, 'uniqid':uniqid},
+    url: 'http://162.218.236.81:55555/track/',
+    data: {'c1':c1,'c2':c3,'c4':c4,'c5':c5,'t1':'t1','l1':l1},
     type: 'POST',
     xhrFields: {
    withCredentials: true
@@ -52,14 +51,13 @@ $.ajax({
     success: function(response) {
            if(response)
         {
-               var track_id = response.id[0];
+               var track_id = response;
                setTimeout(function(){
                       $.ajax({
-                            url:'/engage/',
+                            url:'http://162.218.236.81:55555/engage/'+track_id,
                             xhrFields: {
    withCredentials: true
 },
-                            data:{'track_id':track_id,'token':uniqid},
                             type : 'GET',
                             success:function(response){
                                    console.log("enaged tracked");}),

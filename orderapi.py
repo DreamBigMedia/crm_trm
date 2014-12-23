@@ -3,9 +3,8 @@ import processing, models, json, datetime
 
 from mainapp import app
 
-@app.route('/track/<int:vid>')
-def track_hit(vid):
- v1 = request.args.get('vid','',type=int)
+@app.route('/track/')
+def track_hit():
  c1 = request.args.get('c1','', type=str)
  c2 = request.args.get('c2','', type=str)
  c3 = request.args.get('c3','',type=str)
@@ -18,15 +17,15 @@ def track_hit(vid):
                           conversion=False,engage=False,useragent=useragent,convert=False,lander=l1)
  visitor.save()
  vi = str(visitor.id)
- return jsonify({'visitor_id':vi})
+ return vi
 
 @app.route('/engage/<int:vid>')
 def engage_hit(vid):
  visitor = models.Visitor.objects.get(id=vid)
  visitor.engaged=True
  visitor.save()
- vi = visitor.id
- return jsonify({'visitor_id':vi})
+ vi = str(visitor.id)
+ return vi
 
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
