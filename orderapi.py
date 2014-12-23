@@ -22,8 +22,8 @@ def track_hit():
 
 @app.route('/engage/<vid>')
 def engage_hit(vid):
- visitor = models.Visitor.objects.get(uniqid=vid)
- visitor.engaged=True
+ visitor = models.Visitor.objects.get(id=vid)
+ visitor.engage=True
  visitor.save()
  vi = str(visitor.id)
  return vi
