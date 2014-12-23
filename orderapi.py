@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 import processing, models, json, datetime
 
 from mainapp import app
@@ -12,16 +12,17 @@ def track_hit():
  c5 = request.args.get('c5')
  trafficsource = request.args.get('t1')
  l1 = request.args.get('l1')
+ vid = request.args.get('uniqid')
  useragent = request.headers.get('User-Agent')
  visitor = models.Visitor(c1= c1, c2=c2,c3= c3, c4 = c4,c5=c5, trafficsource = trafficsource,
-                          conversion=False,engage=False,useragent=useragent,convert=False,lander=l1)
+                          conversion=False,engage=False,useragent=useragent,convert=False,lander=l1,uniqid=vid)
  visitor.save()
  vi = str(visitor.id)
  return vi
 
 @app.route('/engage/<vid>')
 def engage_hit(vid):
- visitor = models.Visitor.objects.get(id=vid)
+ visitor = models.Visitor.objects.get(uniqid=vid)
  visitor.engaged=True
  visitor.save()
  vi = str(visitor.id)
@@ -89,7 +90,7 @@ def apiOrderWithCard(customerid):
     oldguy['card'] = newcard.id
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return json.dumps({"card": str(newcard.id), "cc_response": process.raw_response})
+    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success})
 
 @app.route("/api/order/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(customerid, cardid):

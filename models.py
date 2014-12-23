@@ -19,7 +19,7 @@ class Customer(Document):
  partial_time = DateTimeField(default=datetime.datetime.now())
  order_time = DateTimeField()
  recurring = BooleanField(default=False)
- visitor_id = IntField()
+ visitor_id = StringField()
 
 class Creditcard(Document):
  _table_ = "Creditcards"

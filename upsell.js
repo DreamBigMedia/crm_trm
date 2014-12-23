@@ -1,3 +1,8 @@
+var nextpage = "thankyou.html"
+create_hidden_input('orderform', "storeid", "458");
+create_hidden_input('orderform', "pid", "12343");
+create_hidden_input('orderform', "amount", "4.95");
+
 function getValue(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
@@ -21,8 +26,8 @@ function create_hidden_input(form_id, name, value) {
 
 function check_cookie(name) {
     if ($.cookie(name) == undefined) {
-        rand_num = Math.floor(Math.random() * (999999 - 100000)) + 100000;
-        $.cookie(name, rand_num, {
+        rand_num = Math.floor(Math.random() * (max - min)) + min;
+        $.cookie(name, rand_num.toString(), {
            expires: 7,
             path: '/'
         });
@@ -38,40 +43,26 @@ var c4 = getValue('c4');
 var c5 = getValue('c5');
 var t1 = getValue('t1');
 var uniqid = check_cookie('uniqid');
-var dbg_track = "not engaged"
+
+create_hidden_input('orderform', "c1", c1);
+create_hidden_input('orderform', "c2", c2);
+create_hidden_input('orderform', "c3", c3);
+create_hidden_input('orderform', "uniqid", uniqid);
+create_hidden_input('orderform', "orderpage", window.location.href);
 
 //get_token = get_token()
 
-$.ajax({
-    url: 'http://'+document.domain+'/track/',
-    data: {
-        'c1': c1,
-        'c2': c3,
-        'c4': c4,
-        'c5': c5,
-        't1': t1,
-	'uniqid': uniqid
-    },
+$("#orderform").on("submit", function() {$.ajax({
+    url: 'http://'+document.domain+'/api/orderWithCard/'+$.cookie('custid'),
+    data: $("#orderform").serialize(),
     type: 'GET',
     xhrFields: {
         withCredentials: true
     },
     success: function(response) {
-        if (response) {
-            var track_id = response;
-            setTimeout(function() {
-                $.ajax({
-                    url: 'http://'+document.domain+'/engage/' + uniqid,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    type: 'GET',
-                    success: function(response) {
-                        dbg_track = response;
-                        console.log("enaged tracked");
-                    }
-                });
-            }, 13000);
+        if (response.success) {
+			$.cookie('cardid', response.card, { expires: 7, path: '/' });
+                        window.location.href = nextpage;
         }
 
 
@@ -81,3 +72,4 @@ $.ajax({
         console.log(error);
     }
 });
+}
