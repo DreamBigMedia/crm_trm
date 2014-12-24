@@ -3,7 +3,7 @@ import processing, models, json, datetime
 
 from mainapp import app
 
-@app.route('/track/')
+@app.route('/uTrack/')
 def track_hit():
  c1 = request.args.get('c1')
  c2 = request.args.get('c2')
