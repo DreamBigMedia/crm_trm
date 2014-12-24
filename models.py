@@ -7,7 +7,7 @@ connect('trm')
 class Customer(Document):
  fname = StringField()
  lname = StringField( )
- card = IntField() # card id
+ card = StringField() # card id
  email = EmailField()
  ship_address1 = StringField()
  ship_address2 = StringField()

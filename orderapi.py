@@ -72,13 +72,13 @@ def apiOrderWithCard(processor, customerid):
         bill_zip = int(request.form['billing_zipcode'])
     except:
         bill_zip = 0
-    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
+    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
     newcard.save()
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': request.form['card_number'],
-                                 'cc_month': request.form['cc_month'],
-                                 'cc_year': request.form['cc_year'],
-                                 'cc_cvv': request.form['ccv'],
+                                 'cc_month': request.form['exp_month'],
+                                 'cc_year': request.form['exp_year'],
+                                 'cc_cvv': request.form['cvv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
                                  'storeid': request.form['storeid'],
@@ -116,9 +116,9 @@ def apiOrderWithCard(processor, customerid):
         else:
             prodname = prod['name']
         process = processing.Stripe({'cc_number': request.form['card_number'],
-                                 'cc_month': request.form['cc_month'],
-                                 'cc_year': request.form['cc_year'],
-                                 'cc_cvv': request.form['ccv'],
+                                 'cc_month': request.form['exp_month'],
+                                 'cc_year': request.form['exp_year'],
+                                 'cc_cvv': request.form['cvv'],
                                  'amount': prod['amount']*int(request.form['quantity']),
                                  'product': prodname,
                                  'pid': request.form['pid'],
@@ -142,9 +142,9 @@ def apiOrderWithCard(processor, customerid):
                                  'orderpage': request.form['orderpage']}).process()
     else:
         return jsonify({"success": False, "cc_response": "invalid processor"})
-    neworder = models.Order(creditcard=newcard, products=request.form['pid'], tracking=int(request.form['uniqid']), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, recurring=bool(request.form.get('recurring')))
+    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
-    oldguy['card'] = newcard.id
+    oldguy['card'] = str(newcard.id)
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
     return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success})
@@ -235,5 +235,4 @@ def apiOrderNoCard(processor, customerid, cardid):
     return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id), "cc_response": process.raw_response})
 
 if __name__=="__main__":
-  app.debug=True
-  app.run(host="0.0.0.0", port=55555)
+  app.run(host="0.0.0.0", port=55555, debug=True)
