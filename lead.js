@@ -14,13 +14,15 @@ function getValue(variable) {
     }
     return "";
 }
-
 function create_hidden_input(form_id, name, value) {
+
     form_id = "#" + form_id;
     form_ob = $(form_id);
+	form_ob.ready(function(){
 
 
     $("<input name='" + name + "' id='" + name + "' type='hidden' value='" + value + "'/>").appendTo(form_ob);
+	});
 }
 
 
@@ -35,6 +37,7 @@ function check_cookie(name) {
     return $.cookie(name);
 }
 
+$(document).ready(function(){
 var landingpage_id = '1';
 var c1 = getValue('aff_id');
 var c2 = getValue('c2');
@@ -54,8 +57,6 @@ create_hidden_input('orderform', "c3", c3);
 create_hidden_input('orderform', "aff_id", c1);
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
-//get_token = get_token()
-
 
 $("#orderform").on("submit", function() {$.ajax({
     url: 'http://'+document.domain+'/api/customer',
@@ -77,5 +78,12 @@ $("#orderform").on("submit", function() {$.ajax({
         console.log(error);
     }
 });
+
+
+
+});
+
+
+
 }
 });
