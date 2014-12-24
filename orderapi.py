@@ -68,7 +68,7 @@ def apiOrderWithCard(processor, customerid):
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For']
-    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form['billing_address1'], billing_address2=request.form.get('billing_address2'), billing_city=request.form['billing_city'], billing_zipcode=int(request.form['billing_zipcode']))
+    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=int(request.form['billing_zipcode']))
     newcard.save()
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': request.form['card_number'],
@@ -138,7 +138,7 @@ def apiOrderWithCard(processor, customerid):
                                  'orderpage': request.form['orderpage']}).process()
     else:
         return jsonify({"success": False, "cc_response": "invalid processor"})
-    neworder = models.Order(creditcard=newcard, products=request.form['pid'], tracking=int(request.form['tracking']), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, recurring=bool(request.form['recurring']))
+    neworder = models.Order(creditcard=newcard, products=request.form['pid'], tracking=int(request.form['uniqid']), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, recurring=bool(request.form.get('recurring')))
     neworder.save()
     oldguy['card'] = newcard.id
     oldguy['order_time'] = datetime.datetime.now()
@@ -226,6 +226,6 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'orderpage': request.form['orderpage']}).process()
     else:
         return jsonify({"success": False, "cc_response": "invalid processor"})
-    neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form.get('tracking'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+    neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id), "cc_response": process.raw_response})
