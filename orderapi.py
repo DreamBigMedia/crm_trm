@@ -1,10 +1,10 @@
-from flask import request, jsonify
+from flask import request, jsonify, Flask
 import processing, models, json, datetime
 
-from mainapp import app
+app = Flask(__name__)
 
-@app.route('/uTrack/')
-def track_hit():
+@app.route('/track/')
+def track():
  c1 = request.args.get('c1')
  c2 = request.args.get('c2')
  c3 = request.args.get('c3')
