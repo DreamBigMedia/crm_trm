@@ -1,7 +1,5 @@
-var nextpage = "upsell.html";
-var storeid = "458";
-var pid = "549a83c609d0245cdb951618"; //dermasnail - straight - 45.99
-var amount = 45.99;
+var nextpage = "thankyou.html";
+var pid = "549a83c609d0245cdb951618";
 
 function getValue(variable) {
     var query = window.location.search.substring(1);
@@ -14,13 +12,15 @@ function getValue(variable) {
     }
     return "";
 }
-
 function create_hidden_input(form_id, name, value) {
+
     form_id = "#" + form_id;
     form_ob = $(form_id);
+	form_ob.ready(function(){
 
 
     $("<input name='" + name + "' id='" + name + "' type='hidden' value='" + value + "'/>").appendTo(form_ob);
+	});
 }
 
 
@@ -35,6 +35,7 @@ function check_cookie(name) {
     return $.cookie(name);
 }
 
+$('document').ready(function() {
 var landingpage_id = '1';
 var c1 = getValue('aff_id');
 var c2 = getValue('c2');
@@ -44,10 +45,7 @@ var c5 = getValue('c5');
 var t1 = getValue('t1');
 var uniqid = check_cookie('uniqid');
 
-$('document').ready(function() {
-create_hidden_input('orderform', "storeid", storeid);
 create_hidden_input('orderform', "pid", pid);
-create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
@@ -55,21 +53,35 @@ create_hidden_input('orderform', "affid", c1);
 create_hidden_input('orderform', "cacode", "default");
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
-//get_token = get_token()
 
 $("#orderform").on("submit", function() {
 $.ajax({
-    url: 'https://'+document.domain+'/api/orderWithCard/ucrm/'+$.cookie('custid'),
+    url: 'https://'+document.domain+'/api/customer/',
     data: $("#orderform").serialize(),
     type: 'POST',
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) { console.log(response);
-        if (response.success) {
+    success: function(response) {
+        if (response) {
+            var track_id = response;
+            $.cookie('custid', response, { expires: 7, path: '/' });
+            setTimeout(function() {console.log("customer info received");
+                $.ajax({
+                    url: 'https://'+document.domain+'/api/orderWithCard/stripe/' + track_id,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: $("#orderform").serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log("order info received");
 			$.cookie('cardid', response.card, { expires: 7, path: '/' });
 			$.cookie('orderid', response.order, { expires: 7, path: '/' });
                         window.location.href = nextpage;
+                    }
+                });
+            }, 13000);
         }
 
 
