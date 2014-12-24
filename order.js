@@ -57,7 +57,7 @@ create_hidden_input('orderform', "orderpage", window.location.href);
 //get_token = get_token()
 
 $("#orderform").on("submit", function() {$.ajax({
-    url: 'http://'+document.domain+'/api/orderWithCard/'+$.cookie('custid'),
+    url: 'http://'+document.domain+'/api/orderWithCard/stripe/'+$.cookie('custid'),
     data: $("#orderform").serialize(),
     type: 'GET',
     xhrFields: {

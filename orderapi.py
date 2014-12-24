@@ -56,11 +56,12 @@ def apiUpdateCard(cid):
     oldcard.save()
     return str(oldcard.id)
 
-@app.route("/api/orderWithCard/<customerid>")
-def apiOrderWithCard(customerid):
+@app.route("/api/orderWithCard/<processor>/<customerid>")
+def apiOrderWithCard(processor, customerid):
     newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form['billing_address1'], billing_address2=request.form.get('billing_address2'), billing_city=request.form['billing_city'], billing_zipcode=int(request.form['billing_zipcode']))
     newcard.save()
-    process = processing.uCrm({'cc_number': request.form['card_number'],
+    if processor == "ucrm":
+        process = processing.uCrm({'cc_number': request.form['card_number'],
                                  'cc_month': request.form['cc_month'],
                                  'cc_year': request.form['cc_year'],
                                  'cc_cvv': request.form['ccv'],
@@ -84,6 +85,42 @@ def apiOrderWithCard(customerid):
                                  'c3': request.form.get('c3'),
                                  'ip': request.remote_addr,
                                  'orderpage': request.form['orderpage']}).process()
+    elif processor == "stripe":
+        try:
+            prod = models.Product.objects({'id': request.form['pid']})[0]
+        except:
+            return jsonify({"success": False, "cc_response": "invalid product id"})
+        if int(request.form['quantity']) > 1:
+            prodname = prod['name'] + " x"+request.form['quantity']
+        else:
+            prodname = prod['name']
+        process = processing.Stripe({'cc_number': request.form['card_number'],
+                                 'cc_month': request.form['cc_month'],
+                                 'cc_year': request.form['cc_year'],
+                                 'cc_cvv': request.form['ccv'],
+                                 'amount': prod['amount']*int(request.form['quantity']),
+                                 'product': prodname,
+                                 'pid': request.form['pid'],
+                                 'storeid': request.form['storeid'],
+                                 'fname': request.form['fname'],
+                                 'lname': request.form['lname'],
+                                 'address': request.form['billing_address1'],
+                                 'address2': request.form['billing_address2'],
+                                 'city': request.form['billing_city'],
+                                 'state': request.form['billing_state'],
+                                 'postal': request.form['billing_zipcode'],
+                                 'billingsame': True,
+                                 'email': request.form['email'],
+                                 'phone': request.form['billing_phone'],
+                                 'cacode': request.form['cacode'],
+                                 'affid': request.form['affid'],
+                                 'c1': request.form.get('c1'),
+                                 'c2': request.form.get('c2'),
+                                 'c3': request.form.get('c3'),
+                                 'ip': request.remote_addr,
+                                 'orderpage': request.form['orderpage']}).process()
+    else:
+        return jsonify({"success": False, "cc_response": "invalid processor"})
     neworder = models.Order(creditcard=newcard, products=request.form['pid'], tracking=int(request.form['tracking']), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, recurring=bool(request.form['recurring']))
     neworder.save()
     oldguy = models.Customer.objects(id=customerid)[0]
@@ -92,8 +129,8 @@ def apiOrderWithCard(customerid):
     oldguy.save()
     return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success})
 
-@app.route("/api/order/<customerid>/<cardid>", methods=["POST"])
-def apiOrderNoCard(customerid, cardid):
+@app.route("/api/order/<processor>/<customerid>/<cardid>", methods=["POST"])
+def apiOrderNoCard(processor, customerid, cardid):
     try:
         oldcard = models.Creditcard.objects(id=cardid)[0]
     except:
@@ -102,30 +139,67 @@ def apiOrderNoCard(customerid, cardid):
         oldguy = models.Customer.objects(id=customerid)[0]
     except:
         return json.dumps({'error': "could not find customer"})
-    process = processing.uCrm({'cc_number': oldcard['card_number'],
-                                 'cc_month': oldcard['exp_month'],
-                                 'cc_year': oldcard['exp_year'],
-                                 'cc_cvv': oldcard['ccv'],
+    if processor == "ucrm":
+        process = processing.uCrm({'cc_number': request.form['card_number'],
+                                 'cc_month': request.form['cc_month'],
+                                 'cc_year': request.form['cc_year'],
+                                 'cc_cvv': request.form['ccv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
                                  'storeid': request.form['storeid'],
-                                 'fname': oldguy['fname'],
-                                 'lname': oldguy['lname'],
-                                 'address': oldcard['billing_address1'],
-                                 'address2': oldcard['billing_address2'],
-                                 'city': oldcard['billing_city'],
-                                 'state': oldcard['billing_state'],
-                                 'postal': oldcard['billing_zipcode'],
+                                 'fname': request.form['fname'],
+                                 'lname': request.form['lname'],
+                                 'address': request.form['billing_address1'],
+                                 'address2': request.form['billing_address2'],
+                                 'city': request.form['billing_city'],
+                                 'state': request.form['billing_state'],
+                                 'postal': request.form['billing_zipcode'],
                                  'billingsame': bool(request.form['billingsame']),
-                                 'email': oldguy['email'],
-                                 'phone': oldguy['ship_phone'],
-                                 'cacode': request.form.get('cacode'),
-                                 'affid': request.form.get('affid'),
+                                 'email': request.form['email'],
+                                 'phone': request.form['billing_phone'],
+                                 'cacode': request.form['cacode'],
+                                 'affid': request.form['affid'],
                                  'c1': request.form.get('c1'),
                                  'c2': request.form.get('c2'),
                                  'c3': request.form.get('c3'),
                                  'ip': request.remote_addr,
-                                 'orderpage': request.form.get('orderpage')}).process()
+                                 'orderpage': request.form['orderpage']}).process()
+    elif processor == "stripe":
+        try:
+            prod = models.Product.objects({'id': request.form['pid']})[0]
+        except:
+            return jsonify({"success": False, "cc_response": "invalid product id"})
+        if int(request.form['quantity']) > 1:
+            prodname = prod['name'] + " x"+request.form['quantity']
+        else:
+            prodname = prod['name']
+        process = processing.Stripe({'cc_number': request.form['card_number'],
+                                 'cc_month': request.form['cc_month'],
+                                 'cc_year': request.form['cc_year'],
+                                 'cc_cvv': request.form['ccv'],
+                                 'amount': prod['amount']*int(request.form['quantity']),
+                                 'product': prodname,
+                                 'pid': request.form['pid'],
+                                 'storeid': request.form['storeid'],
+                                 'fname': request.form['fname'],
+                                 'lname': request.form['lname'],
+                                 'address': request.form['billing_address1'],
+                                 'address2': request.form['billing_address2'],
+                                 'city': request.form['billing_city'],
+                                 'state': request.form['billing_state'],
+                                 'postal': request.form['billing_zipcode'],
+                                 'billingsame': True,
+                                 'email': request.form['email'],
+                                 'phone': request.form['billing_phone'],
+                                 'cacode': request.form['cacode'],
+                                 'affid': request.form['affid'],
+                                 'c1': request.form.get('c1'),
+                                 'c2': request.form.get('c2'),
+                                 'c3': request.form.get('c3'),
+                                 'ip': request.remote_addr,
+                                 'orderpage': request.form['orderpage']}).process()
+    else:
+        return jsonify({"success": False, "cc_response": "invalid processor"})
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form.get('tracking'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id), "cc_response": process.raw_response})
