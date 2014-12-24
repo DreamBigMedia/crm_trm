@@ -59,7 +59,7 @@ create_hidden_input('orderform', "orderpage", window.location.href);
 
 /////////edit this for correct url before using///////////////
 $("#orderform").on("submit", function() {$.ajax({
-    url: 'http://'+document.domain+'/api/orderWithCard/'+$.cookie('custid'),
+    url: 'http://'+document.domain+'/api/order/ucrm/'+$.cookie('cardid')+'/'+$.cookie('custid'),
     data: $("#orderform").serialize(),
     type: 'GET',
     xhrFields: {
@@ -67,7 +67,7 @@ $("#orderform").on("submit", function() {$.ajax({
     },
     success: function(response) {
         if (response.success) {
-			$.cookie('cardid', response.card, { expires: 7, path: '/' });
+			$.cookie('upsell', true, { expires: 7, path: '/' });
                         window.location.href = nextpage;
         }
 

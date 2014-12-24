@@ -51,19 +51,21 @@ create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
-create_hidden_input('orderform', "aff_id", c1);
+create_hidden_input('orderform', "affid", c1);
+create_hidden_input('orderform', "cacode", "default");
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
 //get_token = get_token()
 
-$("#orderform").on("submit", function() {$.ajax({
+$("#orderform").on("submit", function() {
+$.ajax({
     url: 'https://'+document.domain+'/api/orderWithCard/ucrm/'+$.cookie('custid'),
     data: $("#orderform").serialize(),
     type: 'POST',
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) {
+    success: function(response) { console.log(response);
         if (response.success) {
 			$.cookie('cardid', response.card, { expires: 7, path: '/' });
                         window.location.href = nextpage;
@@ -76,5 +78,6 @@ $("#orderform").on("submit", function() {$.ajax({
         console.log(error);
     }
 });
-}
+return false;
+});
 });
