@@ -68,7 +68,11 @@ def apiOrderWithCard(processor, customerid):
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For']
-    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=int(request.form['billing_zipcode']))
+    try:
+        bill_zip = int(request.form['billing_zipcode'])
+    except:
+        bill_zip = 0
+    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['ccv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
     newcard.save()
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': request.form['card_number'],
@@ -160,8 +164,8 @@ def apiOrderNoCard(processor, customerid, cardid):
         remoteaddr = request.headers['X-Forwarded-For']
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': oldcard['card_number'],
-                                 'cc_month': oldcard['exp_month'],
-                                 'cc_year': oldcard['exp_year'],
+                                 'cc_month': oldcard['cc_month'],
+                                 'cc_year': oldcard['cc_year'],
                                  'cc_cvv': oldcard['ccv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
