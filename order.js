@@ -68,6 +68,7 @@ $.ajax({
     success: function(response) { console.log(response);
         if (response.success) {
 			$.cookie('cardid', response.card, { expires: 7, path: '/' });
+			$.cookie('orderid', response.order, { expires: 7, path: '/' });
                         window.location.href = nextpage;
         }
 

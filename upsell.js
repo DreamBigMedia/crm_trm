@@ -1,4 +1,4 @@
-var nextpage = "thankyou.html";
+var nextpage = "confirm.html";
 var storeid = "458";
 var pid = "12343";
 var amount = 4.95;
@@ -51,17 +51,22 @@ create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
-create_hidden_input('orderform', "aff_id", c1);
+create_hidden_input('orderform', "affid", c1);
+create_hidden_input('orderform', "cacode", "default");
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
-});
 //get_token = get_token()
 
-/////////edit this for correct url before using///////////////
+$("#nothanksbutton").on("click", function() {
+$.cookie('upsell', false, { expires: 7, path: '/' });
+window.location.href = nextpage;
+});
+
+
 $("#orderform").on("submit", function() {$.ajax({
-    url: 'http://'+document.domain+'/api/order/ucrm/'+$.cookie('cardid')+'/'+$.cookie('custid'),
+    url: 'https://'+document.domain+'/api/order/ucrm/'+$.cookie('custid')+'/'+$.cookie('cardid'),
     data: $("#orderform").serialize(),
-    type: 'GET',
+    type: 'POST',
     xhrFields: {
         withCredentials: true
     },
@@ -78,4 +83,6 @@ $("#orderform").on("submit", function() {$.ajax({
         console.log(error);
     }
 });
-}
+return false;
+});
+});
