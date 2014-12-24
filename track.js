@@ -43,7 +43,7 @@ var dbg_track = "not engaged"
 //get_token = get_token()
 
 $.ajax({
-    url: 'http://'+document.domain+'/track/',
+    url: 'https://'+document.domain+'/track/',
     data: {
         'c1': c1,
         'c2': c3,
@@ -61,7 +61,7 @@ $.ajax({
             var track_id = response;
             setTimeout(function() {
                 $.ajax({
-                    url: 'http://'+document.domain+'/engage/' + uniqid,
+                    url: 'https://'+document.domain+'/engage/' + track_id,
                     xhrFields: {
                         withCredentials: true
                     },
