@@ -154,7 +154,7 @@ def apiOrderWithCard(processor, customerid):
     oldguy['card'] = str(newcard.id)
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success})
+    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})
 
 @app.route("/api/order/<processor>/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(processor, customerid, cardid):
@@ -239,7 +239,7 @@ def apiOrderNoCard(processor, customerid, cardid):
         return jsonify({"success": False, "cc_response": "invalid processor"})
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
-    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success})
+    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})
 
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=55555, debug=True)
