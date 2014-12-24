@@ -39,9 +39,9 @@ class Processor:
  def __init__(self, creditcard):
   self.card = creditcard
  def _defaults(self):
-  for x in self.optional_fields:
+  for x in self.optional_fields.keys():
    if x not in self.card.keys():
-    self.card[x] = ''
+    self.card[x] = self.optional_fields[x]
  def _samebilling(self):
   for x in self.address_fields.keys():
    self.card[self.address_fields[x]] = self.card[x]
@@ -109,7 +109,7 @@ class uCrm(Processor):
          'scity': self.card['city'],
          'sstate': self.card['state'],
          'szipcode': self.card['postal'],
-         'scountry': self.card['country'],
+         'scountry': 'US',
          'bfirstname': self.card['billing_fname'],
          'blastname': self.card['billing_lname'],
          'baddress1': self.card['billing_address'],
@@ -117,7 +117,7 @@ class uCrm(Processor):
          'bcity': self.card['billing_city'],
          'bstate': self.card['billing_state'],
          'bzipcode': self.card['billing_postal'],
-         'bcountry': self.card['billing_country'],
+         'bcountry': 'US',
          'cardnumber': self.card['cc_number'],
          'expirymonth': self.card['cc_month'],
          'expiryyear': self.card['cc_year'],

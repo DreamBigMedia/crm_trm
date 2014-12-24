@@ -73,6 +73,13 @@ def apiOrderWithCard(processor, customerid):
     except:
         bill_zip = 0
     newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
+    if billingsame:
+        newcard.billing_address1 = oldguy['ship_address1']
+        newcard.billing_address2 = oldguy['ship_address2']
+        newcard.billing_city = oldguy['ship_city']
+        newcard.billing_state = oldguy['ship_state']
+        newcard.billing_zipcode = oldguy['ship_zipcode']
+        newcard.billing_country = 'us'
     newcard.save()
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': request.form['card_number'],
@@ -154,18 +161,18 @@ def apiOrderNoCard(processor, customerid, cardid):
     try:
         oldcard = models.Creditcard.objects(id=cardid)[0]
     except:
-        return json.dumps({'error': "could not find card"})
+        return jsonify({'cc_response': "could not find card", "success": False})
     try:
         oldguy = models.Customer.objects(id=customerid)[0]
     except:
-        return json.dumps({'error': "could not find customer"})
+        return jsonify({'cc_response': "could not find customer", "success": False})
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For']
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': oldcard['card_number'],
-                                 'cc_month': oldcard['cc_month'],
-                                 'cc_year': oldcard['cc_year'],
+                                 'cc_month': oldcard['exp_month'],
+                                 'cc_year': oldcard['exp_year'],
                                  'cc_cvv': oldcard['ccv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
@@ -184,7 +191,7 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'billing_city': oldcard['billing_city'],
                                  'billing_state': oldcard['billing_state'],
                                  'billing_postal': oldcard['billing_zipcode'],
-                                 'billingsame': billingsame,
+                                 'billingsame': False,
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
                                  'cacode': request.form['cacode'],
@@ -232,7 +239,7 @@ def apiOrderNoCard(processor, customerid, cardid):
         return jsonify({"success": False, "cc_response": "invalid processor"})
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
-    return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id), "cc_response": process.raw_response})
+    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success})
 
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=55555, debug=True)
