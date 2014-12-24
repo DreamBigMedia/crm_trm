@@ -1,10 +1,10 @@
-from flask import request, jsonify
+from flask import request, jsonify, Flask
 import processing, models, json, datetime
 
-from mainapp import app
+app = Flask(__name__)
 
 @app.route('/track/')
-def track_hit():
+def track():
  c1 = request.args.get('c1')
  c2 = request.args.get('c2')
  c3 = request.args.get('c3')
@@ -233,3 +233,7 @@ def apiOrderNoCard(processor, customerid, cardid):
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     return json.dumps({'customer': str(oldguy.id), 'neworder': str(neworder.id), "cc_response": process.raw_response})
+
+if __name__=="__main__":
+  app.debug=True
+  app.run(host="0.0.0.0", port=55555)
