@@ -120,8 +120,10 @@ def apiOrderWithCard(processor, customerid):
             return jsonify({"success": False, "cc_response": "invalid product id"})
         if int(request.form['quantity']) > 1:
             prodname = prod['name'] + " x"+request.form['quantity']
+            prodamount = int(prod['amount']*100*int(request.form['quantity']))
         else:
             prodname = prod['name']
+            prodamount = int(prod['amount']*100)
         process = processing.Stripe({'cc_number': request.form['card_number'],
                                  'cc_month': request.form['exp_month'],
                                  'cc_year': request.form['exp_year'],
@@ -129,17 +131,16 @@ def apiOrderWithCard(processor, customerid):
                                  'amount': prod['amount']*int(request.form['quantity']),
                                  'product': prodname,
                                  'pid': request.form['pid'],
-                                 'storeid': request.form['storeid'],
                                  'fname': request.form['fname'],
                                  'lname': request.form['lname'],
-                                 'address': request.form['billing_address1'],
-                                 'address2': request.form['billing_address2'],
-                                 'city': request.form['billing_city'],
-                                 'state': request.form['billing_state'],
-                                 'postal': request.form['billing_zipcode'],
+                                 'address': request.form['ship_address1'],
+                                 'address2': request.form['ship_address2'],
+                                 'city': request.form['ship_city'],
+                                 'state': request.form['ship_state'],
+                                 'postal': request.form['ship_zipcode'],
                                  'billingsame': True,
                                  'email': request.form['email'],
-                                 'phone': request.form['billing_phone'],
+                                 'phone': request.form['ship_phone'],
                                  'cacode': request.form['cacode'],
                                  'affid': request.form['affid'],
                                  'c1': request.form.get('c1'),
@@ -210,6 +211,12 @@ def apiOrderNoCard(processor, customerid, cardid):
             prodname = prod['name'] + " x"+request.form['quantity']
         else:
             prodname = prod['name']
+        if int(request.form['quantity']) > 1:
+            prodname = prod['name'] + " x"+request.form['quantity']
+            prodamount = int(prod['amount']*100*int(request.form['quantity']))
+        else:
+            prodname = prod['name']
+            prodamount = int(prod['amount']*100)
         process = processing.Stripe({'cc_number': oldcard['card_number'],
                                  'cc_month': oldcard['cc_month'],
                                  'cc_year': oldcard['cc_year'],
