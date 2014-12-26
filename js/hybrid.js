@@ -56,7 +56,7 @@ create_hidden_input('orderform', "orderpage", window.location.href);
 
 $("#orderform").on("submit", function() {
 $.ajax({
-    url: 'https://'+document.domain+'/api/customer/',
+    url: '//'+document.domain+'/api/customer',
     data: $("#orderform").serialize(),
     type: 'POST',
     xhrFields: {
@@ -68,17 +68,19 @@ $.ajax({
             $.cookie('custid', response, { expires: 7, path: '/' });
             setTimeout(function() {console.log("customer info received");
                 $.ajax({
-                    url: 'https://'+document.domain+'/api/orderWithCard/stripe/' + track_id,
+                    url: '//'+document.domain+'/api/orderWithCard/stripe/' + track_id,
                     xhrFields: {
                         withCredentials: true
                     },
                     data: $("#orderform").serialize(),
                     type: 'POST',
                     success: function(response) {
+                      if (response.success) {
                         console.log("order info received");
 			$.cookie('cardid', response.card, { expires: 7, path: '/' });
 			$.cookie('orderid', response.order, { expires: 7, path: '/' });
                         window.location.href = nextpage;
+                      }
                     }
                 });
             }, 13000);
