@@ -130,10 +130,10 @@ class uCrm(Processor):
          'misc3': self.card['c3'],
          'test': '1'}
   print repr(pdata)
-  try:
-   retval = requests.post('https://gateway.sslapplications.net/ynMklop/', pdata).text
-  except:
-   return cashResponse(False, 0, "Could not connect to credit card processor.", "exception", "exception", 0, self.codename)
+  #try:
+  retval = requests.post('https://gateway.sslapplications.net/ynMklop/', pdata, timeout=300000).text
+  #except:
+  # return cashResponse(False, 0, "Could not connect to credit card processor.", "exception -- timeout", "exception -- timeout", 0, self.codename)
   print retval
   #try:
   retvaljson = {}

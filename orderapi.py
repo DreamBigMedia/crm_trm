@@ -27,6 +27,11 @@ def engage_hit(vid):
  vi = str(visitor.id)
  return vi
 
+@app.route("/api/get/customer/<cid>")
+def apiGetCustomer(cid):
+    oldguy = models.Customer().objects({'id': cid})
+    return oldguy[0]
+
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address2'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
@@ -67,7 +72,9 @@ def apiOrderWithCard(processor, customerid):
         billingsame = False
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
-        remoteaddr = request.headers['X-Forwarded-For']
+        remoteaddr = request.headers['X-Forwarded-For'].strip()
+    if ', ' in remoteaddr:
+        remoteaddr = remoteaddr.split(', ')[1]
     try:
         bill_zip = int(request.form['billing_zipcode'])
     except:
@@ -170,6 +177,8 @@ def apiOrderNoCard(processor, customerid, cardid):
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For']
+    if ', ' in remoteaddr:
+        remoteaddr = remoteaddr.split(', ')[1]
     if processor == "ucrm":
         process = processing.uCrm({'cc_number': oldcard['card_number'],
                                  'cc_month': oldcard['exp_month'],
