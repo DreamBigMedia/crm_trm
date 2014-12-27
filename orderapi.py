@@ -67,9 +67,9 @@ def apiOrderWithCard(processor, customerid):
     except:
         return jsonify({"success": False, "cc_response": "invalid customer"})
     if request.form['billingsame'].lower().startswith('y'):
-        billingsame = 'yes'
+        billingsame = True
     else:
-        billingsame = 'no'
+        billingsame = False
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For'].strip()
@@ -89,6 +89,10 @@ def apiOrderWithCard(processor, customerid):
         newcard.billing_country = 'us'
     newcard.save()
     if processor == "ucrm":
+        if billingsame:
+          bsame = 'yes'
+        else:
+          bsame = 'no'
         process = processing.uCrm({'cc_number': request.form['card_number'],
                                  'cc_month': request.form['exp_month'],
                                  'cc_year': request.form['exp_year'],
@@ -110,7 +114,7 @@ def apiOrderWithCard(processor, customerid):
                                  'billing_city': request.form.get('billing_city'),
                                  'billing_state': request.form.get('billing_state'),
                                  'billing_postal': request.form.get('billing_zipcode'),
-                                 'billingsame': billingsame,
+                                 'billingsame': bsame,
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
                                  'cacode': request.form['cacode'],
@@ -122,20 +126,20 @@ def apiOrderWithCard(processor, customerid):
                                  'orderpage': request.form['orderpage']}).process()
     elif processor == "stripe":
         try:
-            prod = models.Product.objects({'id': request.form['pid']})[0]
+            prod = models.Product.objects(id= request.form['pid'])[0]
         except:
             return jsonify({"success": False, "cc_response": "invalid product id"})
         if int(request.form['quantity']) > 1:
             prodname = prod['name'] + " x"+request.form['quantity']
-            prodamount = int(prod['amount']*100*int(request.form['quantity']))
+            prodamount = int(prod['init_price']*100*int(request.form['quantity']))
         else:
             prodname = prod['name']
-            prodamount = int(prod['amount']*100)
+            prodamount = int(prod['init_price']*100)
         process = processing.Stripe({'cc_number': request.form['card_number'],
                                  'cc_month': request.form['exp_month'],
                                  'cc_year': request.form['exp_year'],
                                  'cc_cvv': request.form['cvv'],
-                                 'amount': prod['amount']*int(request.form['quantity']),
+                                 'amount': prod['init_price']*int(request.form['quantity']),
                                  'product': prodname,
                                  'pid': request.form['pid'],
                                  'fname': request.form['fname'],
@@ -156,7 +160,32 @@ def apiOrderWithCard(processor, customerid):
                                  'ip': remoteaddr,
                                  'orderpage': request.form['orderpage']}).process()
     else:
-        return jsonify({"success": False, "cc_response": "invalid processor"})
+        try: #### its not those shitty ones, lets try nmi directly? ####
+            prod = models.Product.objects(id= request.form['pid'])[0]
+        except:
+            return jsonify({"success": False, "cc_response": "invalid product id"})
+        if request.form.get('quantity') == '':
+            prodname = prod['name']
+            prodamount = float(prod['init_price'])
+        elif int(request.form['quantity']) > 1:
+            prodname = prod['name'] + " x"+request.form['quantity']
+            prodamount = float(prod['init_price']*int(request.form['quantity']))
+        else:
+            prodname = prod['name']
+            prodamount = float(prod['init_price'])
+        nmiaccount = models.NMIAccount.objects(id=processor)[0]
+        process = processing.NMI({'cc_number': newcard['card_number'],
+                                 'cc_exp': newcard['exp_month']+newcard['exp_year'],
+                                 'cc_cvv': newcard['ccv'],
+                                 'amount': prodamount,
+                                 'fname': oldguy['fname'],
+                                 'lname': oldguy['lname'],
+                                 'address': newcard['billing_address1'],
+                                 'city': newcard['billing_city'],
+                                 'state': newcard['billing_state'],
+                                 'postal': str(newcard['billing_zipcode']),
+                                 'email': oldguy['email'],
+                                 'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
     neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     oldguy['card'] = str(newcard.id)
@@ -213,7 +242,7 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'orderpage': request.form['orderpage']}).process()
     elif processor == "stripe":
         try:
-            prod = models.Product.objects({'id': request.form['pid']})[0]
+            prod = models.Product.objects(id= request.form['pid'])[0]
         except:
             return jsonify({"success": False, "cc_response": "invalid product id"})
         if int(request.form['quantity']) > 1:
@@ -252,7 +281,32 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'ip': remoteaddr,
                                  'orderpage': request.form['orderpage']}).process()
     else:
-        return jsonify({"success": False, "cc_response": "invalid processor"})
+        try: #### its not those shitty ones, lets try nmi directly? ####
+            prod = models.Product.objects(id= request.form['pid'])[0]
+        except:
+            return jsonify({"success": False, "cc_response": "invalid product id"})
+        if request.form.get('quantity') == '':
+            prodname = prod['name']
+            prodamount = float(prod['init_price'])
+        elif int(request.form['quantity']) > 1:
+            prodname = prod['name'] + " x"+request.form['quantity']
+            prodamount = float(prod['init_price']*int(request.form['quantity']))
+        else:
+            prodname = prod['name']
+            prodamount = float(prod['init_price'])
+        nmiaccount = models.NMIAccount.objects(id=processor)
+        process = processing.NMI({'cc_number': oldcard['card_number'],
+                                 'cc_exp': oldcard['exp_month']+oldcard['exp_year'],
+                                 'cc_cvv': oldcard['ccv'],
+                                 'amount': prodamount,
+                                 'fname': oldguy['fname'],
+                                 'lname': oldguy['lname'],
+                                 'address': oldcard['billing_address1'],
+                                 'city': oldcard['billing_city'],
+                                 'state': oldcard['billing_state'],
+                                 'postal': oldcard['billing_zipcode'],
+                                 'email': oldguy['email'],
+                                 'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})

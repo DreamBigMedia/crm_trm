@@ -38,8 +38,6 @@ class Creditcard(Document):
 class Product(Document):
  name = StringField(default="")
  salestype = StringField(choices=["straight","trial"])
- #order = IntegerField(")
- #upsell = Required(, nullable=True)
  init_price = FloatField( default=0.00)
  rebill_price = FloatField(default=0.00)
 
@@ -73,3 +71,9 @@ class Visitor(Document):
  referer = URLField()
  convert = BooleanField()
  lander = URLField()
+
+class NMIAccount(Document):
+ name = StringField()
+ url = StringField()
+ username = StringField()
+ password = StringField()
