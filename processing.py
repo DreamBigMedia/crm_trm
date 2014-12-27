@@ -60,7 +60,6 @@ class Stripe(Processor):
  optional_fields = {'email': '', 'fname': '', 'lname': '', 'postal': '', 'product': '', 'billingsame':False}
  def process(self):
    Processor.process(self)
-  #try:
    retval = stripe.Charge.create(
        amount=self.card['amount'],
        currency="usd",
@@ -78,8 +77,6 @@ class Stripe(Processor):
        description=self.card['product']
      )
    return cashResponse(True, retval['id'], "Success", retval, json.dumps(retval), retval['amount'], self.codename)
-  #except:
-  # return cashResponse(False, 0, "Your card was declined", "exception", "exception", 0, self.codename)
 
 class uCrm(Processor):
  realname = "uCrm"
@@ -130,53 +127,99 @@ class uCrm(Processor):
          'misc3': self.card['c3'],
          'test': '1'}
   print repr(pdata)
-  #try:
   retval = requests.post('https://secure1.m57media.com/gateway/', pdata, timeout=300000).text
-  #except:
-  # return cashResponse(False, 0, "Could not connect to credit card processor.", "exception -- timeout", "exception -- timeout", 0, self.codename)
   print retval
-  #try:
   retvaljson = {}
   for x in retval.split('&'):
    if '=' not in x:
     continue
    k,v = x.split('=', 1)
    retvaljson[k] = v
-  #except:
-  # return cashResponse(False, 0, "Credit card server returned garbage!", "exception", "exception", 0, self.codename)
   return cashResponse(retvaljson['success']=='Yes', retvaljson['orderID'], retvaljson['message'], retvaljson, retval, self.card['amount'], self.codename)
 
+class NMI(Processor):
+  realname = "NMI"
+  codename = "nmi"
+  required_fields = ['fname', 'lname', 'address', 'city', 'state', 'postal', 'cc_number', 'cc_exp', 'cc_cvv', 'amount', 'ip', 'email']
+  optional_fields = {'product': '', 'billingsame':False, 'country': 'US'}
+  def __init__(self, creditcard, username, password, gateway="https://secure.networkmerchants.com/api/transact.php"):
+    Processor.__init__(self, creditcard)
+    self.gateway = gateway
+    self.username = username
+    self.password = password
+  def process(self):
+    self._defaults()
+    pdata = {'type': 'sale',
+             'username': self.username,
+             'password': self.password,
+             'ccnumber': self.card['cc_number'],
+             'ccexp': self.card['cc_exp'],
+             'amount': self.card['amount'],
+             'cvv': self.card['cc_cvv'],
+             'firstname': self.card['fname'],
+             'lastname': self.card['lname'],
+             'address1': self.card['address'],
+             'city': self.card['city'],
+             'state': self.card['state'],
+             'zip': self.card['postal'],
+             'country': self.card['country'],
+             'email': self.card['email'],
+             'ipaddress': self.card['ip']}
+    retval = requests.post(self.gateway, pdata).text
+    retvaljson = {}
+    for x in retval.split('&'):
+     if '=' not in x:
+      continue
+     k,v = x.split('=', 1)
+     retvaljson[k] = v
+    return cashResponse(retvaljson['response_code']=='100', retvaljson['orderid'], retvaljson['responsetext'], retvaljson, retval, self.card['amount'], self.codename)
+
 if __name__=="__main__": #if we arent an import, run some tests
-  print ">> Stripe()"
-  ostripe = Stripe({'address': '123 fake st',
-     'city': 'Springfield',
-     'state': 'OH',
-     'postal': '45501',
-     'cc_number': '4111111111111111',
-     'cc_month': '04',
-     'cc_year': '2020',
-     'cc_cvv': '303',
-     'amount': '1000'} # $10.00
-     )
-  print ">> Stripe.process()"
-  print str(ostripe.process())
-  print ">> uCrm()"
-  odennis = uCrm({'fname': 'Fat',
+  #print ">> Stripe()"
+  #ostripe = Stripe({'address': '123 fake st',
+  #   'city': 'Springfield',
+  #   'state': 'OH',
+  #   'postal': '45501',
+  #   'cc_number': '4111111111111111',
+  #   'cc_month': '04',
+  #   'cc_year': '2020',
+  #   'cc_cvv': '303',
+  #   'amount': '1000'} # $10.00
+  #   )
+  #print ">> Stripe.process()"
+  #print str(ostripe.process())
+  #print ">> uCrm()"
+  #odennis = uCrm({'fname': 'Fat',
+  #   'lname': 'Tony',
+  #   'address': '123 fake st',
+  #   'city': 'Springfield',
+  #   'state': 'OH',
+  #   'postal': '45501',
+  #   'billingsame': True,
+  #   'cc_number': '4111111111111111',
+  #   'cc_month': '04',
+  #   'cc_year': '2020',
+  #   'cc_cvv': '303',
+  #   'amount': '10.00',
+  #   'email': 'datDruggie@yopmail.com',
+  #   'phone': '8009001000',
+  #   'storeid': '458',
+  #   'pid': '12342',
+  #   'test': '1'})
+  #print ">> uCrm.process()"
+  #print str(odennis.process())
+  print ">> NMI()"
+  omni = NMI({'fname': 'Fat',
      'lname': 'Tony',
      'address': '123 fake st',
      'city': 'Springfield',
      'state': 'OH',
      'postal': '45501',
-     'billingsame': True,
      'cc_number': '4111111111111111',
-     'cc_month': '04',
-     'cc_year': '2020',
+     'cc_exp': '0420',
      'cc_cvv': '303',
      'amount': '10.00',
      'email': 'datDruggie@yopmail.com',
-     'phone': '8009001000',
-     'storeid': '458',
-     'pid': '12342',
-     'test': '1'})
-  print ">> uCrm.process()"
-  print str(odennis.process())
+     'ip': '127.0.0.1'}, 'demo', 'password')
+  print ">> NMI.process()"
+  print str(omni.process())
