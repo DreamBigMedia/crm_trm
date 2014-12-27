@@ -67,9 +67,9 @@ def apiOrderWithCard(processor, customerid):
     except:
         return jsonify({"success": False, "cc_response": "invalid customer"})
     if request.form['billingsame'].lower().startswith('y'):
-        billingsame = True
+        billingsame = 'yes'
     else:
-        billingsame = False
+        billingsame = 'no'
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For'].strip()
@@ -201,7 +201,7 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'billing_city': oldcard['billing_city'],
                                  'billing_state': oldcard['billing_state'],
                                  'billing_postal': oldcard['billing_zipcode'],
-                                 'billingsame': False,
+                                 'billingsame': 'no',
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
                                  'cacode': request.form['cacode'],

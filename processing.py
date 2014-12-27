@@ -131,13 +131,15 @@ class uCrm(Processor):
          'test': '1'}
   print repr(pdata)
   #try:
-  retval = requests.post('https://gateway.sslapplications.net/ynMklop/', pdata, timeout=300000).text
+  retval = requests.post('https://secure1.m57media.com/gateway/', pdata, timeout=300000).text
   #except:
   # return cashResponse(False, 0, "Could not connect to credit card processor.", "exception -- timeout", "exception -- timeout", 0, self.codename)
   print retval
   #try:
   retvaljson = {}
   for x in retval.split('&'):
+   if '=' not in x:
+    continue
    k,v = x.split('=', 1)
    retvaljson[k] = v
   #except:
