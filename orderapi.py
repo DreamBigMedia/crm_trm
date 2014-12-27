@@ -295,16 +295,16 @@ def apiOrderNoCard(processor, customerid, cardid):
             prodname = prod['name']
             prodamount = float(prod['init_price'])
         nmiaccount = models.NMIAccount.objects(id=processor)[0]
-        process = processing.NMI({'cc_number': newcard['card_number'],
-                                 'cc_exp': newcard['exp_month']+newcard['exp_year'],
-                                 'cc_cvv': newcard['ccv'],
+        process = processing.NMI({'cc_number': oldcard['card_number'],
+                                 'cc_exp': oldcard['exp_month']+oldcard['exp_year'],
+                                 'cc_cvv': oldcard['ccv'],
                                  'amount': prodamount,
                                  'fname': oldguy['fname'],
                                  'lname': oldguy['lname'],
-                                 'address': newcard['billing_address1'],
-                                 'city': newcard['billing_city'],
-                                 'state': newcard['billing_state'],
-                                 'postal': str(newcard['billing_zipcode']),
+                                 'address': oldcard['billing_address1'],
+                                 'city': oldcard['billing_city'],
+                                 'state': oldcard['billing_state'],
+                                 'postal': str(oldcard['billing_zipcode']),
                                  'email': oldguy['email'],
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
