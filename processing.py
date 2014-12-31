@@ -38,6 +38,7 @@ class Processor:
                    'country': 'billing_country'}
  def __init__(self, creditcard):
   self.card = creditcard
+  print repr(self.card)
  def _defaults(self):
   for x in self.optional_fields.keys():
    if x not in self.card.keys():
@@ -124,8 +125,7 @@ class uCrm(Processor):
          'leadtype': self.card['leadtype'],
          'misc1': self.card['c1'],
          'misc2': self.card['c2'],
-         'misc3': self.card['c3'],
-         'test': '1'}
+         'misc3': self.card['c3']}
   print repr(pdata)
   retval = requests.post('https://secure1.m57media.com/gateway/', pdata, timeout=300000).text
   print retval

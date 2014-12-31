@@ -70,6 +70,7 @@ def apiOrderWithCard(processor, customerid):
         billingsame = True
     else:
         billingsame = False
+    print str(billingsame)
     remoteaddr = request.remote_addr
     if 'X-Forwarded-For' in request.headers.keys():
         remoteaddr = request.headers['X-Forwarded-For'].strip()
@@ -79,6 +80,7 @@ def apiOrderWithCard(processor, customerid):
         bill_zip = int(request.form['billing_zipcode'])
     except:
         bill_zip = 0
+    print str(bill_zip)
     newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
     if billingsame:
         newcard.billing_address1 = oldguy['ship_address1']
@@ -88,6 +90,7 @@ def apiOrderWithCard(processor, customerid):
         newcard.billing_zipcode = oldguy['ship_zipcode']
         newcard.billing_country = 'us'
     newcard.save()
+    print str(newcard.id)
     if processor == "ucrm":
         if billingsame:
           bsame = 'yes'
