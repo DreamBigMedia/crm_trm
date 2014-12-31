@@ -93,10 +93,10 @@ def apiOrderWithCard(processor, customerid):
           bsame = 'yes'
         else:
           bsame = 'no'
-        process = processing.uCrm({'cc_number': request.form['card_number'],
-                                 'cc_month': request.form['exp_month'],
-                                 'cc_year': request.form['exp_year'],
-                                 'cc_cvv': request.form['cvv'],
+        process = processing.uCrm({'cc_number': newcard['card_number'],
+                                 'cc_month': newcard['exp_month'],
+                                 'cc_year': newcard['exp_year'],
+                                 'cc_cvv': newcard['ccv'],
                                  'amount': request.form['amount'],
                                  'pid': request.form['pid'],
                                  'storeid': request.form['storeid'],
@@ -109,11 +109,11 @@ def apiOrderWithCard(processor, customerid):
                                  'postal': oldguy['ship_zipcode'],
                                  'billing_fname': request.form.get('fname'),
                                  'billing_lname': request.form.get('lname'),
-                                 'billing_address': request.form.get('billing_address1'),
+                                 'billing_address': newcard['billing_address1'],
                                  'billing_address2': request.form.get('billing_address2'),
-                                 'billing_city': request.form.get('billing_city'),
-                                 'billing_state': request.form.get('billing_state'),
-                                 'billing_postal': request.form.get('billing_zipcode'),
+                                 'billing_city': newcard['billing_city'],
+                                 'billing_state': newcard['billing_state'],
+                                 'billing_postal': newcard['billing_zipcode'],
                                  'billingsame': bsame,
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
@@ -307,6 +307,10 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'postal': str(oldcard['billing_zipcode']),
                                  'email': oldguy['email'],
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
+        if prod['salestype'] == 'trial':
+            future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
+            x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
+            x.save()
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})

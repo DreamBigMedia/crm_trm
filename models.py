@@ -38,6 +38,7 @@ class Creditcard(Document):
 class Product(Document):
  name = StringField(default="")
  salestype = StringField(choices=["straight","trial"])
+ rebilldays = IntField(default=0)
  init_price = FloatField( default=0.00)
  rebill_price = FloatField(default=0.00)
 
@@ -77,3 +78,9 @@ class NMIAccount(Document):
  url = StringField()
  username = StringField()
  password = StringField()
+
+class Rebill(Document):
+ card = StringField()
+ customer = StringField()
+ pid = StringField()
+ date = StringField()
