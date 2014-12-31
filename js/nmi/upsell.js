@@ -60,7 +60,7 @@ window.location.href = nextpage;
 
 
 $("#orderform").on("submit", function() {$.ajax({
-    url: 'https://'+document.domain+'/api/order/'+store+'/'+$.cookie('custid')+'/'+$.cookie('cardid'),
+    url: 'https://'+document.domain+'/api/order/'+storeid+'/'+$.cookie('custid')+'/'+$.cookie('cardid'),
     data: $("#orderform").serialize(),
     type: 'POST',
     xhrFields: {
