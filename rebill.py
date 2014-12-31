@@ -23,7 +23,7 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y")):
 	prodamount = float(prod['rebill_price'])
 	nmiaccount = processorCycle()
 	print oldguy['fname']+"\t"+oldguy['lname']
-	print oldcard['card_number'][4:]+('*'*8)+oldcard['card_number'][-4:]
+	print oldcard['card_number'][:4]+('*'*8)+oldcard['card_number'][-4:]
 	print oldcard['exp_month']+"/"+oldcard['exp_year']
 	print oldcard['billing_address1']
 	print oldcard['billing_city']+", "+oldcard['billing_state']+" "+str(oldcard['billing_zipcode'])

@@ -39,7 +39,7 @@ class Product(Document):
  name = StringField(default="")
  salestype = StringField(choices=["straight","trial"])
  rebilldays = IntField(default=0)
- init_price = FloatField( default=0.00)
+ init_price = FloatField(default=0.00)
  rebill_price = FloatField(default=0.00)
 
 class Order(Document):
@@ -78,6 +78,7 @@ class NMIAccount(Document):
  url = StringField()
  username = StringField()
  password = StringField()
+ batchmax = IntField()
 
 class Rebill(Document):
  card = StringField()

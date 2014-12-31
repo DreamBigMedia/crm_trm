@@ -1,7 +1,7 @@
 var nextpage = "upsell.html";
 var storeid = "458";
-var pid = "549a83c609d0245cdb951618"; //dermasnail - straight - 45.99
-var amount = 45.99;
+var pid = "12342";
+var amount = 4.95;
 
 function getValue(variable) {
     var query = window.location.search.substring(1);
@@ -13,6 +13,16 @@ function getValue(variable) {
         }
     }
     return "";
+}
+
+function checkValue(variable) {
+    if ($.cookie(variable) == undefined) {
+        $.cookie(variable, getValue(variable), {
+           expires: 7,
+            path: '/'
+        });
+    }
+    return $.cookie(variable);
 }
 
 function create_hidden_input(form_id, name, value) {
@@ -36,12 +46,12 @@ function check_cookie(name) {
 }
 
 var landingpage_id = '1';
-var c1 = getValue('aff_id');
-var c2 = getValue('c2');
-var c3 = getValue('c3');
-var c4 = getValue('c4');
-var c5 = getValue('c5');
-var t1 = getValue('t1');
+var c1 = checkValue('aff_id');
+var c2 = checkValue('c2');
+var c3 = checkValue('c3');
+var c4 = checkValue('c4');
+var c5 = checkValue('c5');
+var t1 = checkValue('t1');
 var uniqid = check_cookie('uniqid');
 
 $('document').ready(function() {
