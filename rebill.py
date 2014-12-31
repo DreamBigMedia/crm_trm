@@ -9,6 +9,10 @@ def processorCycle():
 	if thisran >= processors[currproc].batchmax:
 		currproc += 1
 		thisran = 0
+		while thisran >= processors[currproc].batchmax:
+			currproc += 1
+			if currproc >= len(processors):
+				currproc = 0
 	if currproc >= len(processors):
 		currproc = 0
 	thisran += 1

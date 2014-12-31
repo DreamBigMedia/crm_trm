@@ -56,7 +56,7 @@ class Email(Document):
  optin_time = DateTimeField(datetime)
  purchased = BooleanField(default=False)
  followup = BooleanField(default=False)
- followup2 = BooleanField( default=False)
+ followup2 = BooleanField(default=False)
  followup3 = BooleanField(default=False)
 
 class Visitor(Document):
@@ -78,7 +78,7 @@ class NMIAccount(Document):
  url = StringField()
  username = StringField()
  password = StringField()
- batchmax = IntField()
+ batchmax = IntField(default=0)
 
 class Rebill(Document):
  card = StringField()
