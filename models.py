@@ -85,3 +85,4 @@ class Rebill(Document):
  customer = StringField()
  pid = StringField()
  date = StringField()
+ batched = BooleanField(default=False)

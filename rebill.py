@@ -1,4 +1,5 @@
-import models, time, datetime
+import models, time, datetime, processing
+
 
 thisran = 0
 currproc = 0
@@ -21,7 +22,7 @@ def processorCycle():
 	print "processor: "+str(processors[currproc])
 	return processors[currproc]
 
-for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y")):
+for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 	oldcard = models.Creditcard.objects(id=x['card'])[0]
 	oldguy = models.Customer.objects(id=x['customer'])[0]
 	prod = models.Product.objects(id=x['pid'])[0]
@@ -47,6 +48,8 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y")):
 				'email': oldguy['email'],
 				'ip': '127.0.0.1'}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
 	print "approved: "+str(process.success)+"\n"
+	x['batched'] = True
+	x.save()
 	future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
 	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"))
 	x.save()
