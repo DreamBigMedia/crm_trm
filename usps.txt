@@ -1,0 +1,19 @@
+Thank you for registering for the U. S. Postal Service's Web Tools Application Program Interfaces (APIs).  We are providing you with a Username to allow for access to the Production Servers, either through a third party ecommerce shipping software or through direct integration.
+
+Your Username is 078DREAM0086
+Your Password is 196NU92LB322
+
+The URLs you will use for the Production Servers are:
+        http://production.shippingapis.com/ShippingAPI.dll
+        https://secure.shippingapis.com/ShippingAPI.dll
+
+You have been granted standard production access including the below API functionality. Please note that you no longer need to contact the USPS for access to these services:
+        Price Calculators
+        Package Tracking
+        Service Standards and Commitments
+
+Permissions for validating addresses, creating shipping labels, and scheduling Package Pickups are added separately. Should you have an interest in obtaining these permissions or if your software provider requires them, please contact our Internet Customer Care Center (uspstechnicalsupport@mailps.custhelp.com) and include "Web Tools API Access" in the subject line. An agent will be happy to assist you.
+
+Your Web Tools User ID, shown above, is required to integrate with USPS Web Tools APIs directly or through a software provider.  For more details on direct integration, refer to the latest versions of the technical documentation, including the Developer Guide, at https://www.usps.com/webtools.  If you are using a third party shipping software or shopping cart provider, please refer to their customer service resources for instructions for use, key updates and other support.
+
+Please note that profiles that are inactive for four years will be permanently deleted without notice.
