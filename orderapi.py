@@ -81,7 +81,7 @@ def apiOrderWithCard(processor, customerid):
     except:
         bill_zip = 0
     print str(bill_zip)
-    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_zipcode=bill_zip)
+    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_state=request.form.get('billing_state'), billing_zipcode=bill_zip)
     if billingsame:
         newcard.billing_address1 = oldguy['ship_address1']
         newcard.billing_address2 = oldguy['ship_address2']
@@ -189,6 +189,10 @@ def apiOrderWithCard(processor, customerid):
                                  'postal': str(newcard['billing_zipcode']),
                                  'email': oldguy['email'],
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
+        if prod['salestype'] == 'trial':
+            future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
+            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
+            x.save()
     neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     oldguy['card'] = str(newcard.id)

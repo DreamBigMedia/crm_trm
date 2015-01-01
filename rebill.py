@@ -13,8 +13,10 @@ def processorCycle():
 			currproc += 1
 			if currproc >= len(processors):
 				currproc = 0
+				print "restarting from processor #0"
 	if currproc >= len(processors):
 		currproc = 0
+		print "restarting from processor #0"
 	thisran += 1
 	print "processor: "+str(processors[currproc])
 	return processors[currproc]
