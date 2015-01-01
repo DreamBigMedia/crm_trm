@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+    <!--<![endif]-->
+    <head>
+        <title>Unify | Welcome...</title>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="favicon.ico">
+        <!-- CSS Global Compulsory -->
+        <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <!-- CSS Implementing Plugins -->
+        <link rel="stylesheet" href="assets/plugins/line-icons/line-icons.css">
+        <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/plugins/sky-forms/version-2.0.1/css/custom-sky-forms.css">
+        <!--[if lt IE 9]>
+        <link rel="stylesheet" href="assets/plugins/sky-forms/version-2.0.1/css/sky-forms-ie8.css">
+    <![endif]-->
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+        <!-- CSS Theme -->
+        <link rel="stylesheet" href="assets/css/theme-colors/default.css">
+        <!-- CSS Customization -->
+        <link rel="stylesheet" href="assets/css/custom.css">
+    </head>
+    <body>
+        <div class="wrapper">
+            <!--=== Header ===-->
+            <!--=== End Header ===-->
+            <!--=== Breadcrumbs ===-->
+            <div class="breadcrumbs">
+                <div class="container">
+                    <h1 class="pull-left">Form Layouts</h1>
+                </div>
+            </div>
+            <!--/breadcrumbs-->
+            <!--=== End Breadcrumbs ===-->
+            <!--=== Content Part ===-->
+            <div class="container content">
+                <div class="row">
+                    <!-- Begin Sidebar Menu -->
+                    <div class="col-md-3">
+                        <ul class="list-group sidebar-nav-v1" id="sidebar-nav">
+                            <li class="list-group-item list-toggle">
+                                <a data-toggle="collapse" data-parent="#sidebar-nav" href="/mid/add/">Mids</a>
+                            </li>
+                            <!-- Typography -->
+                            <!-- End Typography -->
+                            <!-- Buttons UI -->
+                            <li class="list-group-item list-toggle">
+                                <a data-toggle="collapse" data-parent="#sidebar-nav" href="#collapse-buttons">Remove Mid</a>
+                            </li>
+                            <!-- End Buttons UI -->
+                            <!-- Icons -->
+                            <li class="list-group-item list-toggle">
+                                <a data-toggle="collapse" data-parent="#sidebar-nav" href="#collapse-icons">Products</a>
+                            </li>
+                            <!-- End Icons -->
+                            <!-- Content Boxes -->
+                            <li class="list-group-item list-toggle">
+                                <a class="accordion-toggle" href="/orders/" data-toggle="collapse">Orders</a>
+                                <ul id="collapse-content-boxes" class="collapse">
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/daily/"><i class="fa fa-cog"></i> Today</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/yesterday/"><i class="fa fa-cog"></i> Yesterday</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/week_to_day/"><i class="fa fa-cog"></i> Week To Day</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/last_week/"><i class="fa fa-cog"></i> Last Week</a>
+                                    </li>
+                                    <li>
+                                        <a href="order/month_to_day/"><i class="fa fa-align-center"></i> Month to Day</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End Content Boxes -->
+                            <!-- Thumbails -->
+                            <li class="list-group-item">
+                                <a href="feature_thumbails.html">Customer</a>
+                            </li>
+                            <!-- End Thumbails -->
+                            <!-- Components -->
+                            <li class="list-group-item list-toggle">
+                                <a class="accordion-toggle" href="#collapse-components" data-toggle="collapse">Affiliates</a>
+                                <ul id="collapse-components" class="collapse">
+                                    <li>
+                                        <a href="customer/new/today"><i class="fa fa-comment"></i> Today</a>
+                                    </li>
+                                    <li>
+                                        <a href="customer/new/week"><i class="fa fa-comment"></i>Week</a>
+                                    </li>
+                                    <li>
+                                        <a href="customer/new/month"><i class="fa fa-comment"></i> Month</a>
+                                    </li>
+                                    <li>
+                                        <a href="customer/new/all"><i class="fa fa-comment"></i> All Time</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End Components -->
+                            <!-- Accordion and Tabs -->
+                            <li class="list-group-item">
+                                <a href="feature_accordion_and_tabs.html">Find Customers by ID</a>
+                                <label class="label">Customer ID</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-user"></i>
+                                    <input type="text" name="customer_id" id="customer_id">
+                                </label>
+                                <button type="submit" class="button">Lookup</button>
+                            </li>
+                            <li class="list-group-item">
+                                <form action="/order/" action="GET">
+                                    <a href="#">Look Up Order by ID</a>
+                                    <label class="label">Order Number</label>
+                                    <label class="input">
+                                        <i class="icon-append fa fa-user"></i>
+                                        <input type="text" name="order_number" id="order_number">
+                                    </label>
+                                    <button type="submit" class="button">Lookup</button>
+                            </li>
+                            <li class="list-group-item list-toggle">
+                                <a class="accordion-toggle" href="#collapse-timeline" data-toggle="collapse">Emails</a>
+                                <ul id="collapse-timeline" class="collapse">
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="feature_timeline1.html"><i class="fa fa-dot-circle-o"></i> Timeline 1</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="feature_timeline2.html"><i class="fa fa-dot-circle-o"></i> Timeline 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="list-group-item list-toggle">
+                                <a class="accordion-toggle" href="/orders/" data-toggle="collapse">Partials</a>
+                                <ul id="collapse-content-boxes" class="collapse">
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/daily/"><i class="fa fa-cog"></i> Today</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/yesterday/"><i class="fa fa-cog"></i> Yesterday</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/week_to_day/"><i class="fa fa-cog"></i> Week To Day</a>
+                                    </li>
+                                    <li>
+                                        <span class="badge badge-u">New</span>
+                                        <a href="orders/last_week/"><i class="fa fa-cog"></i> Last Week</a>
+                                    </li>
+                                    <li>
+                                        <a href="order/month_to_day/"><i class="fa fa-align-center"></i> Month to Day</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- End Accordion and Tabs -->
+                            <!-- Timeline -->
+                            <!-- End Timeline -->
+                            <!-- Carousel Exampls -->
+                            <!-- End Carousel Exampls -->
+                            <!-- Forms -->
+                            <!-- End Forms -->
+                            <!-- Tables -->
+                            <!-- End Tables -->
+                            <!-- Maps -->
+                            <!-- End Maps -->
+                            <!-- Charts -->
+                            <!-- End Charts -->
+                        </ul>
+                    </div>
+                    <!-- End Sidebar Menu -->
+                    <!-- Begin Content -->
+                    <div class="col-md-9">
+              
+                        <form action="assets/php/demo-comment-process.php" method="post" id="sky-form4" class="sky-form">
+                    
+                
+                    {% block flash_message %}
+                    {% with models = get_flashed_messages(model_list=True) %}
+                    {% model_headers = models.attributes %}
+					
+                    <div class="container">
+                        <div id="flash_message_container">
+						<table> 
+					
+                            {% for attributes_of_model in model_headers %}
+								<th>{{attributes_of_model}}</th
+								{%endfor%}
+								
+								<tbody>
+								 {% for model in models %}
+								 
+								 <tr data={{model.id}} >
+								 {%for key in model%}
+								 <td>{{model[key]}}</td>
+								  {%endfor%}
+								  <td>       <button type="button" class="close" data-dismiss="alert">Update</button></td>
+								  			  <td>       <button type="button" class="close" data-dismiss="alert">Delete</button></td>
+											  
+								  {%endfor%}
+								 
+                   
+                            {% endfor %}
+                        </div>
+                    </div>
+             
+                    {% endwith %}
+                    {% endblock %}</table>
+                    </form>
+                </div>
+                
+                </div>
+            </fieldset>
+           
+        <section>
+            <label class="label">Comment</label>
+            <label class="textarea">
+                <i class="icon-append fa fa-comment"></i>
+                <textarea rows="4" name="comment"></textarea>
+            </label>
+            <div class="note">You may use these HTML tags and attributes: &lt;a href="" title=""&gt;, &lt;abbr title=""&gt;, &lt;acronym title=""&gt;, &lt;b&gt;, &lt;blockquote cite=""&gt;, &lt;cite&gt;, &lt;code&gt;, &lt;del datetime=""&gt;, &lt;em&gt;, &lt;i&gt;, &lt;q cite=""&gt;, &lt;strike&gt;, &lt;strong&gt;.</div>
+        </section>
+        <section>
+            <label class="label">Enter characters below</label>
+            <label class="input input-captcha">
+                <img src="assets/plugins/sky-forms/version-2.0.1/captcha/image.php?<?php echo time(); ?>" width="100" height="32" alt="Captcha image"/>
+                <input type="text" maxlength="6" name="captcha" id="captcha">
+            </label>
+        </section>
+    </fieldset>
+    <footer>
+        <button type="submit" name="submit" class="button">Add comment</button>
+    </footer>
+    <div class="message">
+        <i class="rounded-x fa fa-check"></i>
+        <p>Your comment was successfully added!</p>
+    </div>
+</form>
+<!-- End Comments-->
+<!-- End Content -->
+<!--/container-->
+<!--=== End Content Part ===-->
+<!--=== Footer Version 1 ===-->
+<div class="footer-v1">
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- About -->
+                <div class="col-md-3 md-margin-bottom-40">
+                    <a href="index.html">
+                        <img id="logo-footer" class="footer-logo" src="assets/img/logo2-default.png" alt="">
+                    </a>
+                    <p>About Unify dolor sit amet, consectetur adipiscing elit. Maecenas eget nisl id libero tincidunt sodales.</p>
+                    <p>Duis eleifend fermentum ante ut aliquam. Cras mi risus, dignissim sed adipiscing ut, placerat non arcu.</p>
+                </div>
+                <!--/col-md-3-->
+                <!-- End About -->
+                <!-- Latest -->
+                <div class="col-md-3 md-margin-bottom-40">
+                    <div class="posts">
+                        <div class="headline">
+                            <h2>Latest Posts</h2>
+                        </div>
+                        <ul class="list-unstyled latest-list">
+                            <li>
+                                <a href="#">Incredible content</a>
+                                <small>May 8, 2014</small>
+                            </li>
+                            <li>
+                                <a href="#">Best shoots</a>
+                                <small>June 23, 2014</small>
+                            </li>
+                            <li>
+                                <a href="#">New Terms and Conditions</a>
+                                <small>September 15, 2014</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--/col-md-3-->
+                <!-- End Latest -->
+                <!-- Link List -->
+                <div class="col-md-3 md-margin-bottom-40">
+                    <div class="headline">
+                        <h2>Useful Links</h2>
+                    </div>
+                    <ul class="list-unstyled link-list">
+                        <li>
+                            <a href="#">About us</a>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a href="#">Portfolio</a>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a href="#">Latest jobs</a>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a href="#">Community</a>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a href="#">Contact us</a>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                    </ul>
+                </div>
+                <!--/col-md-3-->
+                <!-- End Link List -->
+                <!-- Address -->
+                <div class="col-md-3 map-img md-margin-bottom-40">
+                    <div class="headline">
+                        <h2>Contact Us</h2>
+                    </div>
+                    <address class="md-margin-bottom-40">
+                            25, Lorem Lis Street, Orange <br/>
+                            California, US <br/>
+                            Phone: 800 123 3456 <br/>
+                            Fax: 800 123 3456 <br/>
+                            Email: <a href="mailto:info@anybiz.com" class="">info@anybiz.com</a></address>
+                </div>
+                <!--/col-md-3-->
+                <!-- End Address -->
+            </div>
+        </div>
+    </div>
+    <!--/footer-->
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>
+                            2014 &copy; All Rights Reserved.<a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+                </div>
+                <!-- Social Links -->
+                <div class="col-md-6">
+                    <ul class="footer-socials list-inline">
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Skype"><i class="fa fa-skype"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Google Plus"><i class="fa fa-google-plus"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pinterest"><i class="fa fa-pinterest"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li>
+                            <a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Dribbble"><i class="fa fa-dribbble"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End Social Links -->
+            </div>
+        </div>
+    </div>
+    <!--/copyright-->
+</div>
+<!--=== End Footer Version 1 ===-->
+<!--/End Wrapepr-->
+<!-- JS Global Compulsory -->
+<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="assets/plugins/back-to-top.js"></script>
+<!-- Login Form -->
+<script src="assets/plugins/sky-forms/version-2.0.1/js/jquery.form.min.js"></script>
+<!-- Validation Form -->
+<script src="assets/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"></script>
+<!-- JS Customization -->
+<script type="text/javascript" src="assets/js/custom.js"></script>
+<!-- JS Page Level -->
+<script type="text/javascript" src="assets/js/app.js"></script>
+<script type="text/javascript" src="assets/js/forms/reg.js"></script>
+<script type="text/javascript" src="assets/js/forms/login.js"></script>
+<script type="text/javascript" src="assets/js/forms/contact.js"></script>
+<script type="text/javascript" src="assets/js/forms/comment.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();
+        RegForm.initRegForm();
+        LoginForm.initLoginForm();
+        ContactForm.initContactForm();
+        CommentForm.initCommentForm();      
+    });
+</script>
+<!--[if lt IE 9]>
+    <script src="assets/plugins/respond.js"></script>
+    <script src="assets/plugins/html5shiv.js"></script>
+    <script src="assets/js/plugins/placeholder-IE-fixes.js"></script>
+    <script src="assets/plugins/sky-forms/version-2.0.1/js/sky-forms-ie8.js"></script>
+<![endif]-->
+<!--[if lt IE 10]>
+    <script src="assets/plugins/sky-forms/version-2.0.1/js/jquery.placeholder.min.js"></script>
+<![endif]-->
