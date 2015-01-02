@@ -50,7 +50,8 @@ $.ajax({
         'c4': c4,
         'c5': c5,
         't1': t1,
-	'uniqid': uniqid
+	'uniqid': uniqid,
+	'orderpage': window.location.href
     },
     type: 'GET',
     xhrFields: {

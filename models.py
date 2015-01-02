@@ -69,9 +69,9 @@ class Visitor(Document):
  conversion = StringField()
  engage = StringField()
  useragent = StringField()
- referer = URLField()
+ referer = StringField()
  convert = StringField()
- lander = URLField()
+ lander = StringField()
 
 class NMIAccount(Document):
  name = StringField()

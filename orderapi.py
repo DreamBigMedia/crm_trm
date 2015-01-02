@@ -14,7 +14,7 @@ def track():
  l1 = request.args.get('l1')
  vid = request.args.get('uniqid')
  useragent = request.headers.get('User-Agent')
- visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert=False, lander=l1, uniqid=vid)
+ visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert=False, lander=l1, uniqid=vid, referer=request.headers.get('Referer'))
  visitor.save()
  vi = str(visitor.id)
  return vi
