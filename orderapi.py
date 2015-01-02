@@ -14,7 +14,12 @@ def track():
  l1 = request.args.get('l1')
  vid = request.args.get('uniqid')
  useragent = request.headers.get('User-Agent')
- visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert=False, lander=l1, uniqid=vid, referer=request.headers.get('Referer'))
+ remoteaddr = request.remote_addr
+ if 'X-Forwarded-For' in request.headers.keys():
+  remoteaddr = request.headers['X-Forwarded-For'].strip()
+ if ', ' in remoteaddr:
+  remoteaddr = remoteaddr.split(', ')[1]
+ visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert=False, lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
  visitor.save()
  vi = str(visitor.id)
  return vi
@@ -195,10 +200,17 @@ def apiOrderWithCard(processor, customerid):
             x.save()
     neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
+    visid = "didnt convert"
+    if process.success:
+      oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr, conversion=False)[0]
+      oldvisitor['conversion'] = True
+      oldvisitor['convert'] = request.form['pid']
+      oldvisitor.save()
+      visid = str(oldvisitor.id)
     oldguy['card'] = str(newcard.id)
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})
+    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id), "visitor": visid})
 
 @app.route("/api/order/<processor>/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(processor, customerid, cardid):

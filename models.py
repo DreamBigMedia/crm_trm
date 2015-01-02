@@ -70,8 +70,9 @@ class Visitor(Document):
  conversion = BooleanField()
  engage = BooleanField()
  useragent = StringField()
+ remoteaddr = StringField()
  referer = StringField()
- convert = BooleanField()
+ convert = StringField()
  lander = StringField()
  uniqid = StringField()
 

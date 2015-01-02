@@ -33,7 +33,7 @@ def updateTable(collection):
   if request.form.get('id') != '':
    a = b.objects(id=request.form['id'])[0]
    xyz = {}
-   zyx = mongoconvert(request.form)
+   zyx = mongoconvert(b, request.form)
    for x in a:
     print repr(x)
     if x == 'id':
@@ -42,7 +42,7 @@ def updateTable(collection):
     xyz[x] = str(a[x])
   else:
    xyz = {}
-   zyx = mongoconvert(request.form)
+   zyx = mongoconvert(b, request.form)
    for x in request.form:
     print repr(x)
     if x == 'id':
