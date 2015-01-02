@@ -11,25 +11,44 @@ def home(e):
 def trm(**demArgs):
  return render_template('view.html', **demArgs)
 
-@app.route("/update/<collection>", methods="POST")
-def updateTable(collection, column, value):
+def mongoconvert(table, data):
+ retval = {}
+ for x in data:
+  if table._fields[x].__class__.__name__ == "IntField":
+    retval[x] = int(data[x])
+  elif table._fields[x].__class__.__name__ == "BooleanField":
+    retval[x] = bool(data[x])
+  elif table._fields[x].__class__.__name__ == "FloatField":
+    retval[x] = float(data[x])
+  elif table._fields[x].__class__.__name__ == "ObjectIdField":
+    continue
+  else:
+    retval[x] = data[x]
+ return retval
+
+@app.route("/update/<collection>", methods=["POST"])
+def updateTable(collection):
   if request.form.get('id') != '':
    a = getattr(models, collection.title()).objects(id=request.form['id'])[0]
    xyz = {}
-   for x in y:
+   for x in a:
     if x == 'id':
      continue
     a[x] = request.form[x]
     xyz[x] = str(a[x])
   else:
    xyz = {}
-   for x in y:
+   for x in request.form:
     if x == 'id':
      continue
     xyz[x] = request.form[x]
    a = getattr(models, collection.title())(**xyz)
   a.save()
   return jsonify(xyz)
+
+@app.route("/remove/<collection>/<thatid>")
+def removeRow(collection, thatid):
+  return str(getattr(models, collection.title()).objects(id=thatid)[0].delete())
 
 @app.route("/one/<collection>/<column>/<value>")
 def getOrder(collection, column, value):

@@ -15,10 +15,10 @@ class Customer(Document):
  ship_state = StringField()
  ship_phone = StringField()
  ship_zipcode = StringField()
- partial = BooleanField(default=True)
+ partial = StringField()
  partial_time = DateTimeField(default=datetime.datetime.now())
  order_time = DateTimeField()
- recurring = BooleanField(default=False)
+ recurring = StringField()
  visitor_id = StringField()
 
 class Creditcard(Document):
@@ -32,7 +32,7 @@ class Creditcard(Document):
  billing_city = StringField()
  billing_state = StringField()
  billing_zipcode = IntField()
- active_card = BooleanField(default=False)
+ active_card = StringField()
  # orders = Set("Order")
 
 class Product(Document):
@@ -48,16 +48,16 @@ class Order(Document):
  products = StringField()
  tracking = StringField()
  order_date = DateTimeField()
- success = BooleanField()
+ success = StringField()
  server_response = StringField(default="")
- email_buy = BooleanField(default=False)
+ email_buy = StringField()
 
 class Email(Document):
  optin_time = DateTimeField(datetime)
- purchased = BooleanField(default=False)
- followup = BooleanField(default=False)
- followup2 = BooleanField(default=False)
- followup3 = BooleanField(default=False)
+ purchased = StringField()
+ followup = StringField()
+ followup2 = StringField()
+ followup3 = StringField()
 
 class Visitor(Document):
  c1 = StringField()
@@ -66,11 +66,11 @@ class Visitor(Document):
  c4 = StringField()
  c5 = StringField()
  trafficsource = StringField(default="unknown")
- conversion = BooleanField(default=False)
- engage = BooleanField()
+ conversion = StringField()
+ engage = StringField()
  useragent = StringField()
  referer = URLField()
- convert = BooleanField()
+ convert = StringField()
  lander = URLField()
 
 class NMIAccount(Document):
@@ -87,4 +87,4 @@ class Rebill(Document):
  customer = StringField()
  pid = StringField()
  date = StringField()
- batched = BooleanField(default=False)
+ batched = StringField(default=False)
