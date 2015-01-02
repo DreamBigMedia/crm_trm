@@ -34,6 +34,7 @@ function GetDatas() {
   }
   
   var container = document.getElementById('data-table-div');
+  container.innerHTML = "";
   var hot = new Handsontable(container,
   {
     data: data,
