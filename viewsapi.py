@@ -52,5 +52,15 @@ def getOrders(collection, sortmethod, start, num):
    c += 1
  return jsonify(z)
 
+@app.route("/columns/<collection>")
+def getColumns(collection):
+ x = getattr(models, collection.title()).objects().limit(1)[0]
+ z = {}
+ c = 0
+ for y in x:
+  z[c] = y
+  c += 1
+ return jsonify(z)
+
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=30303, debug=True)

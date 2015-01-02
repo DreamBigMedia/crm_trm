@@ -15,11 +15,7 @@ h2 {margin: 20px 0;}
 </style>
 
 <script type="text/javascript">
-$('document').ready(function () {
-var table="{{ collection }}";
-var sortmode="{{ sortmethod }}";
-var start={{ start }};
-var numrows={{ num }};
+function GetDatas() {
   $.ajax({
     url: location.protocol+'//'+document.domain+':30303/all/'+table+'/'+sortmode+'/'+start+'/'+numrows,
     type: 'GET',
@@ -66,12 +62,65 @@ var numrows={{ num }};
         console.log(error);
     }
 });
+}
+var table="{{ collection }}";
+var sortmode="{{ sortmethod }}";
+var start={{ start }};
+var numrows={{ num }};
+$('document').ready(function () {
+GetDatas();
 
 });
+
+function switchStuff() {
+table = document.getElementById("collection").value;
+sortmode = document.getElementById("column").value;
+start = document.getElementById("start").value;
+numrows = document.getElementById("numrows").value;
+GetDatas();
+}
+
+function getColumns() {
+ $.ajax({
+    url: location.protocol+'//'+document.domain+':30303/columns/'+document.getElementById("collection").value,
+    type: 'GET',
+    xhrFields: {
+        withCredentials: true
+    },
+    success: function(response) { console.log(response);
+newcolumns = "<option value='$natural'>$naturally</option>"
+for (var x in response) {
+newcolumns += "<option value='+"+response[x]+"'>+"+response[x]+"</option><option value='-"+response[x]+"'>-"+response[x]+"</option>";
+}
+document.getElementById("column").innerHTML = newcolumns
+
+    },
+
+    error: function(error) {
+        console.log(error);
+    }
+});
+}
 </script>
 </head>
 <body>
-
+<form id="movetables">
+<select name="collection" id="collection" onchange="getColumns()">
+<option value="customer">customer</option>
+<option value="creditcard">creditcard</option>
+<option value="product">product</option>
+<option value="order">order</option>
+<option value="email">email</option>
+<option value="visitor">visitor</option>
+<option value="nmiaccount">nmiaccount</option>
+<option value="rebill">rebill</option>
+</select>
+<select name="column" id="column">
+</select>
+<input type="text" name="start" id="start" value="0">
+<input type="text" name="numrows" id="numrows" value="20">
+<input type="button" onclick="switchStuff()" value="get those">
+</form>
 <div id="data-table-div" class="handsontable"></div>
 </body>
 </html>

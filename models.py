@@ -80,6 +80,8 @@ class NMIAccount(Document):
  password = StringField()
  batchmax = IntField(default=0)
 
+Nmiaccount = NMIAccount # for rest api
+
 class Rebill(Document):
  card = StringField()
  customer = StringField()
