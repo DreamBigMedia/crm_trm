@@ -24,6 +24,8 @@ def getOrders(collection, sortmethod, start, num):
   else:
    xyz = {}
    for x in y:
+    if x == 'id':
+     continue
     xyz[x] = request.form[x]
    a = getattr(models, collection.title())(**xyz)
   a.save()
