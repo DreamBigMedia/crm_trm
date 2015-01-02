@@ -33,19 +33,21 @@ def updateTable(collection):
   if request.form.get('id') != '':
    a = b.objects(id=request.form['id'])[0]
    xyz = {}
+   zyx = mongoconvert(request.form)
    for x in a:
     print repr(x)
     if x == 'id':
      continue
-    a[x] = request.form[x]
+    a[x] = zyx[x]
     xyz[x] = str(a[x])
   else:
    xyz = {}
+   zyx = mongoconvert(request.form)
    for x in request.form:
     print repr(x)
     if x == 'id':
      continue
-    xyz[x] = request.form[x]
+    xyz[x] = zyx[x]
    a = b(**xyz)
   a.save()
   return jsonify(xyz)
