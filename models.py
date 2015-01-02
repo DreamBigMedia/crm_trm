@@ -66,7 +66,7 @@ class Visitor(Document):
  c4 = StringField()
  c5 = StringField()
  trafficsource = StringField(default="unknown")
- optin_time = DateTimeField(datetime)
+ optin_time = StringField(default="never")
  conversion = BooleanField()
  engage = BooleanField()
  useragent = StringField()

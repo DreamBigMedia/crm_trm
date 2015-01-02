@@ -19,7 +19,7 @@ def track():
   remoteaddr = request.headers['X-Forwarded-For'].strip()
  if ', ' in remoteaddr:
   remoteaddr = remoteaddr.split(', ')[1]
- visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert=False, lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
+ visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
  visitor.save()
  vi = str(visitor.id)
  return vi
