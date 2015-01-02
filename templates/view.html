@@ -63,7 +63,7 @@ function GetDatas() {
   var data = [];
   c=0;
   for (var key in response) {
-    response[key]['deletebutton'] = "<a onclick=\"removeRow('"+response[key]['id']+"')\">[ X ]</a>";
+    response[key]['deletebutton'] = "<a onclick=\"removeRow('"+response[key]['id']+"')\">[ x ]</a>";
     response[key]['updatebutton'] = "<a onclick=\"saveRow("+c+")\">[ ^ ]</a>";
     c += 1;
     data.push(response[key]);
