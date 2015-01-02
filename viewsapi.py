@@ -1,7 +1,11 @@
-from flask import request, jsonify, Flask, render_template
+from flask import request, jsonify, Flask, render_template, redirect
 import processing, models, json, datetime
 
 app = Flask(__name__)
+
+@app.errorhandler(404)
+def home(e):
+ return redirect("/trm/product/$natural/0/20", code=302)
 
 @app.route("/trm/<collection>/<sortmethod>/<start>/<num>")
 def trm(**demArgs):
