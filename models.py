@@ -72,6 +72,7 @@ class Visitor(Document):
  referer = StringField()
  convert = StringField()
  lander = StringField()
+ uniqid = StringField()
 
 class NMIAccount(Document):
  name = StringField()
