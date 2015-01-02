@@ -28,10 +28,12 @@ def mongoconvert(table, data):
 
 @app.route("/update/<collection>", methods=["POST"])
 def updateTable(collection):
+  print repr(request.form.get('id'))
   if request.form.get('id') != '':
    a = getattr(models, collection.title()).objects(id=request.form['id'])[0]
    xyz = {}
    for x in a:
+    print repr(x)
     if x == 'id':
      continue
     a[x] = request.form[x]
@@ -39,6 +41,7 @@ def updateTable(collection):
   else:
    xyz = {}
    for x in request.form:
+    print repr(x)
     if x == 'id':
      continue
     xyz[x] = request.form[x]

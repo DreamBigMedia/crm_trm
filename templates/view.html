@@ -23,15 +23,15 @@ function removeRow(rid) {
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) { console.log(response);GetDatas(); }
+    success: function(response) { GetDatas(); }
   });
 }
 function saveRow(rid) {
   thatdata = hot.getDataAtRow(rid);
-  thisdata = {};
+  thisdata = {"id":""};
   for (x in thatdata) {
     if (x<2) { continue; }
-    thisdata[headers[x]] = thatdata[x]
+    thisdata[headers[x]] = thatdata[x];
   }
   $.ajax({
     url: location.protocol+'//'+document.domain+':30303/update/'+table,
@@ -40,12 +40,15 @@ function saveRow(rid) {
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) { console.log(response); }
+    success: function(response) { console.log("saved row"); }
   });
   console.log(thisdata);
+  GetDatas();
 }
 
 var headers;
+var data;
+var collums;
 function GetDatas() {
   $.ajax({
     url: location.protocol+'//'+document.domain+':30303/all/'+table+'/'+sortmode+'/'+start+'/'+numrows,
@@ -53,14 +56,14 @@ function GetDatas() {
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) { console.log(response);
-  var collums = [{data:"deletebutton", renderer:"html"},{data:"updatebutton", renderer:"html"}];
+    success: function(response) {
+  collums = [{data:"deletebutton", renderer:"html"},{data:"updatebutton", renderer:"html"}];
   headers = ["delete","update"];
   for (var k1 in response[0]) {
     headers.push(k1);
     collums.push({data:k1,renderer:"text"});
   }
-  var data = [];
+  data = [];
   c=0;
   for (var key in response) {
     response[key]['deletebutton'] = "<a onclick=\"removeRow('"+response[key]['id']+"')\">[ x ]</a>";
@@ -69,20 +72,13 @@ function GetDatas() {
     data.push(response[key]);
   }
   
-    console.log({
-    data: data,
-    minSpareRows: 0,
-    contextMenu: true,
-    columns: collums,
-    colHeaders: headers
-  });
   var container = document.getElementById('data-table-div');
   container.innerHTML = "";
   hot = new Handsontable(container,
   {
     data: data,
     minSpareRows: 0,
-    contextMenu: true,
+    contextMenu: ["undo", "redo"],
     columns: collums,
     colHeaders: headers
   });
@@ -131,7 +127,7 @@ function getColumns() {
     xhrFields: {
         withCredentials: true
     },
-    success: function(response) { console.log(response);
+    success: function(response) {
 newcolumns = "<option value='$natural'>$naturally</option>"
 for (var x in response) {
 newcolumns += "<option value='+"+response[x]+"'>+"+response[x]+"</option><option value='-"+response[x]+"'>-"+response[x]+"</option>";
@@ -144,6 +140,20 @@ document.getElementById("column").innerHTML = newcolumns
         console.log(error);
     }
 });
+}
+
+function addRow() {
+	darr = {"deletebutton": "<a>[<>]</a>", "updatebutton":"<a onclick=\"saveRow("+c+")\">[ ^ ]</a>"}
+	for (x in collums) {
+		if ((collums[x]['data'] == "updatebutton") || (collums[x] == "deletebutton")) { continue; }
+		console.log(collums[x]);
+		darr[collums[x]['data']] = "---";
+	}
+	darr['id'] = "";
+	console.log(darr);
+	data.push(darr);
+	console.log(data);
+	$("#data-table-div").handsontable("render");
 }
 </script>
 </head>
@@ -165,6 +175,7 @@ document.getElementById("column").innerHTML = newcolumns
 <input type="text" name="numrows" id="numrows" value="20">
 <input type="button" onclick="switchStuff()" value="get those">
 </form>
-<div id="data-table-div" class="handsontable"></div>
+<div id="data-table-div" class="handsontable"></div><br>
+<a onclick="addRow()"><b>[ + ]</b></a>
 </body>
 </html>
