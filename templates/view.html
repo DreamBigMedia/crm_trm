@@ -157,7 +157,7 @@ function addRow() {
 }
 </script>
 </head>
-<body>
+<body onload="setTimeout(function() {getColumns();}, 5000)">
 <form id="movetables">
 <select name="collection" id="collection" onchange="getColumns()">
 <option value="customer">customer</option>
