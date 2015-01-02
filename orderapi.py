@@ -19,7 +19,7 @@ def track():
   remoteaddr = request.headers['X-Forwarded-For'].strip()
  if ', ' in remoteaddr:
   remoteaddr = remoteaddr.split(', ')[1]
- visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
+ visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
  visitor.save()
  vi = str(visitor.id)
  return vi
@@ -34,13 +34,24 @@ def engage_hit(vid):
 
 @app.route("/api/get/customer/<cid>")
 def apiGetCustomer(cid):
-    oldguy = models.Customer().objects({'id': cid})
+    oldguy = models.Customer().objects(id=cid)
     return oldguy[0]
 
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address2'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
     newguy.save()
+    remoteaddr = request.remote_addr
+    if 'X-Forwarded-For' in request.headers.keys():
+        remoteaddr = request.headers['X-Forwarded-For'].strip()
+    if ', ' in remoteaddr:
+        remoteaddr = remoteaddr.split(', ')[1]
+    try:
+        oldvisitor = models.Visitor.objects(uniqid=request.form.get('uniqid'), remoteaddr=remoteaddr, lead=False)[0]
+        oldvisitor['lead'] = True
+        oldvisitor.save()
+    except:
+        print "couldnt find lead!"
     return str(newguy.id)
 
 @app.route("/api/update/customer/<cid>", methods=["POST"])
