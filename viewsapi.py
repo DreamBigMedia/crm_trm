@@ -1,7 +1,11 @@
-from flask import request, jsonify, Flask
+from flask import request, jsonify, Flask, render_template
 import processing, models, json, datetime
 
 app = Flask(__name__)
+
+@app.route("/trm/<collection>/<sortmethod>/<start>/<num>")
+def trm(**demArgs):
+ return render_template('view.html', **demArgs)
 
 @app.route("/update/<collection>", methods="POST")
 def updateTable(collection, column, value):

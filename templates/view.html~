@@ -1,0 +1,77 @@
+<!-- Ugly Hack due to jsFiddle issue: http://goo.gl/BUfGZ -->
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<script src="http://handsontable.com/dist/handsontable.full.js"></script>
+<link rel="stylesheet" media="screen" href="http://handsontable.com/dist/handsontable.full.css">
+<link rel="stylesheet" media="screen" href="http://handsontable.com/demo/css/samples.css">
+<link rel="stylesheet" media="screen" href="http://handsontable.com/demo/css/samples.css">
+<link rel="stylesheet" media="screen" href="http://handsontable.com/demo/css/samples.css">
+
+<style type="text/css">
+body {background: white; margin: 20px;}
+h2 {margin: 20px 0;}
+</style>
+
+<script type="text/javascript">
+$('document').ready(function () {
+var table="{{ table }}";
+var sortmode="{{ sortmode }}";
+var start={{ start }};
+var numrows={{ num }};
+  $.ajax({
+    url: location.protocol+'//'+document.domain+':30303/all/'+table+'/'+sortmode+'/'+start+'/'+numrows,
+    type: 'GET',
+    xhrFields: {
+        withCredentials: true
+    },
+    success: function(response) { console.log(response);
+
+  var data = [];
+  for (var key in response) {
+    var next = [];
+    for (var k2 in response[key]) {
+      next.push(response[key][k2]);
+    }
+    data.push(next);
+  }
+  
+  var container = document.getElementById('data-table-div');
+  var hot = new Handsontable(container,
+  {
+    data: data,
+    minSpareRows: 1,
+    colHeaders: true,
+    contextMenu: true
+  });
+  
+  
+      Handsontable.Dom.addEvent(document.body, 'click', function (e) {
+  
+        var element = e.target || e.srcElement;
+  
+        if (element.nodeName == "BUTTON" && element.name == 'dump') {
+          var name = element.getAttribute('data-dump');
+          var instance = element.getAttribute('data-instance');
+          var hot = window[instance];
+          console.log('data of ' + name, hot.getData());
+        }
+      });
+
+
+    },
+
+    error: function(error) {
+        console.log(error);
+    }
+});
+
+});
+</script>
+</head>
+<body>
+
+<div id="data-table-div" class="handsontable"></div>
+</body>
+</html>
