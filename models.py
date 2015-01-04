@@ -93,7 +93,7 @@ class Rebill(Document):
  date = StringField()
  batched = StringField(default=False)
 
-class Smtpserver(Document);
+class Smtpserver(Document):
  storeid = StringField(default="")
  host = StringField()
  port = IntField()
