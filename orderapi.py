@@ -44,10 +44,6 @@ def apiCustomer():
         mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
     except:
         mailservs = models.Smtpserver.objects()[0]
-    sm = tMail(mailservs['host'], mailservs['port'])
-    sm.login(mailservs['username'], mailservs['password'], request.form.get('email'))
-    if not sm.verify():
-     return "ERROR: invalid email"
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address2'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
     newguy.save()
     remoteaddr = request.remote_addr

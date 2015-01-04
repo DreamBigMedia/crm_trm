@@ -6,12 +6,12 @@ class tMail:
  def __init__(self, server, port):
   self.server = server
   self.port = port
- def login(self, username, password, to, from=None):
-  if from==None:
-   from = username+"@"+self.server
+ def login(self, username, password, to, fromaddr=None):
+  if fromaddr==None:
+   fromaddr = username+"@"+self.server
   self.username = username
   self.password = password
-  self.from = from
+  self.fromaddr = fromaddr
   self.to = to
   self.sendmail = smtplib.SMTP(self.server, self.port)
   self.sendmail.ehlo_or_helo_if_needed()
@@ -22,4 +22,4 @@ class tMail:
   else:
    return False
  def send(self, body):
-  self.sendmail.sendmail(self.from, self.to, body)
+  self.sendmail.sendmail(self.fromaddr, self.to, body)
