@@ -1,5 +1,6 @@
 from flask import request, jsonify, Flask
-import processing, models, json, datetime
+from tMail import tMail
+import processing, models, json, datetime, os.path
 
 app = Flask(__name__)
 
@@ -39,6 +40,14 @@ def apiGetCustomer(cid):
 
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
+    try:
+        mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
+    except:
+        mailservs = models.Smtpserver.objects()[0]
+    sm = tMail(mailservs['host'], mailservs['port'])
+    sm.login(mailservs['username'], mailservs['password'], request.form.get('email'))
+    if not sm.verify():
+     return "ERROR: invalid email"
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address2'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
     newguy.save()
     remoteaddr = request.remote_addr
@@ -209,6 +218,24 @@ def apiOrderWithCard(processor, customerid):
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
             x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
             x.save()
+        sm = tMail(mailservs['host'], mailservs['port'])
+        sm.login(mailservs['username'], mailservs['password'], oldguy['email'])
+        with open(os.path.join('emails', mailservs['theme'], 'order.html')) as fd:
+            macros = {'fname': oldguy['fname'],
+                      'lname': oldguy['lname'],
+                      'bill_address': newcard['billing_address1'],
+                      'bill_city': newcard['billing_city'],
+                      'bill_state': newcard['billing_state'],
+                      'bill_zip': newcard['billing_zipcode'],
+                      'email': oldguy['email'],
+                      'ip': remoteaddr,
+                      'prod': prodname,
+                      'total': str(prodamount),
+                      'ccnum': ('*'*12)+newcard['card_number'][-4:]}
+            email = fd.read()
+            for x in macros.keys():
+                email = email.replace("{"+x+"}", macros[x])
+        sm.send(email)
     neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     visid = "didnt convert"

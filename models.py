@@ -92,3 +92,11 @@ class Rebill(Document):
  pid = StringField()
  date = StringField()
  batched = StringField(default=False)
+
+class Smtpserver(Document);
+ storeid = StringField(default="")
+ host = StringField()
+ port = IntField()
+ username = StringField()
+ password = StringField()
+ theme = StringField()
