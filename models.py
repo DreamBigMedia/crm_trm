@@ -91,7 +91,7 @@ class Rebill(Document):
  customer = StringField()
  pid = StringField()
  date = StringField()
- batched = StringField(default=False)
+ batched = BooleanField(default=False)
 
 class Smtpserver(Document):
  storeid = StringField(default="")

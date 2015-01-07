@@ -240,7 +240,6 @@ var data;
 var collums;
 function GetDatas() {
 document.getElementById("herelink").value = location.protocol+'//'+document.domain+':30303/trm/'+table+'/'+sortmode+'/'+start+'/'+numrows;
-document.getElementById('ggbox').contentDocument.location.href = 'data:text/html;base64,'+Base64.encode('<html><body><form action="http://gg.gg/create" method="POST"><input type=hidden name=custom_path value=""><input type=hidden name=use_norefs value=0><input type=hidden name=long_url value="'+document.getElementById("herelink").value+'"><input type=hidden name=app value=site><input type=hidden name=version value="0.1"><input type=submit value="Shrink-a-Link"></form></body></html>');
   $.ajax({
     url: location.protocol+'//'+document.domain+':30303/all/'+table+'/'+sortmode+'/'+start+'/'+numrows,
     type: 'GET',
@@ -368,7 +367,7 @@ function addRow() {
 <input type="text" name="numrows" id="numrows" value="20" style="width: 10%">
 <input type="button" onclick="switchStuff()" value="get those" style="width: 5%">
 </form><br>
-Share Link: <iframe width="100px" id='ggbox' height="40px" width="200px" style="display: none"></iframe>
+Share Link: 
 <input type="text" id="herelink" style="width: 100%">
 <div id="data-table-div" class="handsontable" style="width: 100%"></div><br>
 <a onclick="addRow()"><b>[ + ]</b></a> new row</div>

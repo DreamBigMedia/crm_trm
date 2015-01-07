@@ -89,8 +89,8 @@ def getColumns(collection):
 
 @app.route("/get/affid/<affid>")
 def getByAffid(affid):
- visitors = {'notengage': {'bought': models.Visitor.objects(c1=affid, engage=False, conversion=True).count, 'notbought': models.Visitor.objects(c1=affid, engage=False, conversion=False).count},
-             'engage': {'bought': models.Visitor.objects(c1=affid, engage=True, conversion=True).count, 'notbought': models.Visitor.objects(c1=affid, engage=True, conversion=False).count}}
+ visitors = {'notengage': {'bought': models.Visitor.objects(c1=affid, engage=False, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=False, conversion=False).count()},
+             'engage': {'bought': models.Visitor.objects(c1=affid, engage=True, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=True, conversion=False).count()}}
  return jsonify(visitors)
  
 

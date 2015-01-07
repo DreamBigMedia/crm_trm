@@ -40,10 +40,6 @@ def apiGetCustomer(cid):
 
 @app.route("/api/customer", methods=["POST"])
 def apiCustomer():
-    try:
-        mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
-    except:
-        mailservs = models.Smtpserver.objects()[0]
     newguy = models.Customer(fname=request.form.get('fname'), lname=request.form.get('lname'), email=request.form.get('email'), ship_address1=request.form.get('ship_address1'), ship_address2=request.form.get('ship_address2'), ship_city=request.form.get('ship_city'), ship_state=request.form.get('ship_state'), ship_phone=request.form.get('ship_phone'), ship_zipcode=request.form.get('ship_zipcode'))
     newguy.save()
     remoteaddr = request.remote_addr
@@ -184,6 +180,10 @@ def apiOrderWithCard(processor, customerid):
                                  'ip': remoteaddr,
                                  'orderpage': request.form['orderpage']}).process()
     else:
+        try:
+            mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
+        except:
+            mailservs = models.Smtpserver.objects()[0]
         try: #### its not those shitty ones, lets try nmi directly? ####
             prod = models.Product.objects(id= request.form['pid'])[0]
         except:
@@ -334,6 +334,10 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'ip': remoteaddr,
                                  'orderpage': request.form['orderpage']}).process()
     else:
+        try:
+            mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
+        except:
+            mailservs = models.Smtpserver.objects()[0]
         try: #### its not those shitty ones, lets try nmi directly? ####
             prod = models.Product.objects(id= request.form['pid'])[0]
         except:
