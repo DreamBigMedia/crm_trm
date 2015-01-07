@@ -1,6 +1,7 @@
 var nextpage = "werks.html";
 var storeid = "54a47abd09d0245aa7cb6d07";
 var pid = "549e2aba09d024031841af28";
+var amount = 12.34;
 
 function getValue(variable) {
     var query = window.location.search.substring(1);
@@ -12,6 +13,16 @@ function getValue(variable) {
         }
     }
     return "";
+}
+
+function checkValue(variable) {
+    if ($.cookie(variable) == undefined) {
+        $.cookie(variable, getValue(variable), {
+           expires: 7,
+            path: '/'
+        });
+    }
+    return $.cookie(variable);
 }
 
 function create_hidden_input(form_id, name, value) {
@@ -35,19 +46,23 @@ function check_cookie(name) {
 }
 
 var landingpage_id = '1';
-var c1 = getValue('aff_id');
-var c2 = getValue('c2');
-var c3 = getValue('c3');
-var c4 = getValue('c4');
-var c5 = getValue('c5');
-var t1 = getValue('t1');
+var c1 = checkValue('aff_id');
+var c2 = checkValue('c2');
+var c3 = checkValue('c3');
+var c4 = checkValue('c4');
+var c5 = checkValue('c5');
+var t1 = checkValue('t1');
 var uniqid = check_cookie('uniqid');
 
 $('document').ready(function() {
+create_hidden_input('orderform', "storeid", storeid);
 create_hidden_input('orderform', "pid", pid);
+create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
+create_hidden_input('orderform', "affid", c1);
+create_hidden_input('orderform', "cacode", "default");
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
 create_hidden_input('orderform', "quantity", 1);

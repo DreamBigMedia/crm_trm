@@ -51,7 +51,9 @@
                         <!-- Checkout-Form -->
                         <form id="orderform" class="sky-form">
                             <header>Checkout form</header>
-                            <fieldset>
+<fieldset><input onchange="toggleBillingAddress(document.findElementByName('billingsame').value)" name="billingsame" value="yes" checked type="radio"> <label for="radioOne">Yes</label>
+                                                    <input class="my-valid-class" id="radioTwo" onchange="toggleBillingAddress(document.findElementByName('billingsame').value)" name="billingsame" value="no" type="radio"> <label for="radioTwo">No</label></fieldset>
+                            <fieldset id="billingaddress">
                                 <section>
                                     <label for="file" class="input">
                                         <input type="text" name="billing_address1" placeholder="Address">
@@ -145,7 +147,7 @@
                                     <label class="label col col-4 control-label">Expiration date</label>
                                     <section class="col col-3">
                                         <label class="input">Month:
-                                            <input type="text" name="exp_month" id="year" placeholder="MM">
+                                            <input type="text" name="exp_month" id="month" placeholder="MM">
                                             <i></i>
                                         </label>
                                     </section>
@@ -206,6 +208,15 @@
         ReviewForm.initReviewForm();        
         CheckoutForm.initCheckoutForm();              
     });
+function toggleBillingAddress(yeaornah) {
+            if (yeaornah=='yes') {
+                 document.getElementById('billingaddress').style.display = "none";
+            } else {
+                document.getElementById('billingaddress').style.display = "block";
+            }
+            isSame = !yeaornah;
+        }
+toggleBillingAddress('yes')
 </script>
         <!--[if lt IE 9]>
     <script src="assets/plugins/respond.js"></script>
