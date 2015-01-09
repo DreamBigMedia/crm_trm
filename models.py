@@ -51,6 +51,7 @@ class Order(Document):
  success = BooleanField()
  server_response = StringField(default="")
  email_buy = StringField()
+ affid = StringField()
 
 class Email(Document):
  optin_time = DateTimeField(datetime)

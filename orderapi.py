@@ -232,7 +232,7 @@ def apiOrderWithCard(processor, customerid):
             for x in macros.keys():
                 email = email.replace("{"+x+"}", macros[x])
         sm.send(email)
-    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
     visid = "didnt convert"
     if process.success:
@@ -244,7 +244,7 @@ def apiOrderWithCard(processor, customerid):
     oldguy['card'] = str(newcard.id)
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id), "visitor": visid})
+    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id)), "visitor": visid})
 
 @app.route("/api/order/<processor>/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(processor, customerid, cardid):
@@ -368,9 +368,9 @@ def apiOrderNoCard(processor, customerid, cardid):
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
             x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
             x.save()
-    neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+    neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
-    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": str(neworder.id)})
+    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
 
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=55555, debug=True)

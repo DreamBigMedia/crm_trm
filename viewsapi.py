@@ -91,7 +91,14 @@ def getColumns(collection):
 def getByAffid(affid):
  visitors = {'notengage': {'bought': models.Visitor.objects(c1=affid, engage=False, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=False, conversion=False).count()},
              'engage': {'bought': models.Visitor.objects(c1=affid, engage=True, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=True, conversion=False).count()}}
- return jsonify(visitors)
+ orders = {}
+ for x in models.Order.objects(affid=affid):
+  if x['products'] not in orders.keys():
+   orders[x['products']] = {'sales': 0,
+                       'name': models.Product.objects(id=x['products'])[0]['name'],
+                       'type': models.Product.objects(id=x['products'])[0]['salestype']}
+  orders[x['products']]['sales'] += 1
+ return jsonify({'products': orders, 'visitors': visitors})
  
 
 if __name__=="__main__":
