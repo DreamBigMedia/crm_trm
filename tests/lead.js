@@ -72,8 +72,8 @@ $.ajax({
     },
     success: function(response) {
         if (response) {
-			$.cookie('custid', response, { expires: 7, path: '/' });
-                        window.location.href = nextpage;
+		$.cookie('custid', response, { expires: 7, path: '/' });
+                window.location.href = nextpage;
         }
 
 
