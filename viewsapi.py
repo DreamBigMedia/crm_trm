@@ -1,14 +1,60 @@
 from flask import request, jsonify, Flask, render_template, redirect
-import processing, models, json, datetime
+import processing, models, json, datetime, hashlib
 
 app = Flask(__name__)
 
+loggedinusers = {}
+def loggedIn():
+    cookie = request.cookies.get('lgnCookie')
+    if cookie in loggedinusers.keys():
+      return loggedinusers[cookie]
+    else:
+      return False
+
+passwd_salt = "aougSAJFISAhg4%()*&DvTriangle%IHclmdojfby7900000iamgodbitchdonthackthis_illkillyou"
+def logIn(user, passwd):
+  global loggedinusers
+  pwhash = hashlib.md5(passwd+"\\"+user+"\\"+passwd_salt).hexdigest()
+  x = models.Affiliate.objects(username=user)
+  if x.count() > 0:
+   y = x[0]
+   if y['pwhash'] == pwhash:
+    datcookie = user+"\\\\"+hashlib.md5(pwhash+user).hexdigest()
+    loggedinusers[datcookie] = {'username': y['username'], 'affid':y['affid'], 'displayname': y['displayname'], 'loggedin': True}
+    return datcookie
+  return False
+
+def addUser(user, passwd, affid = None, displayname=None):
+ if displayname==None:
+  displayname = user
+ if affid==None:
+  affid = user
+ x = models.Affiliate(username = user, pwhash = hashlib.md5(passwd+"\\"+user+"\\"+passwd_salt).hexdigest(), affid=affid, displayname=displayname).save()
+
 @app.errorhandler(404)
 def home(e):
- return redirect("/trm/product/$natural/0/20", code=302)
+ return redirect("/login", code=302)
+
+@app.route("/login", methods=["GET", "POST"])
+def loginPage():
+ li = loggedIn()
+ if li != False:
+  if li['loggedin'] == True:
+   return redirect("/trm/product/$natural/0/50")
+ if request.method=="POST":
+  x = logIn(request.form['username'], request.form['passwd'])
+  if x != False: 
+   r = app.make_response(redirect("/trm/product/$natural/0/50"))
+   r.set_cookie("lgnCookie", value=x)
+   return r
+  return "<html><head><title>WRONG PASSWORD quit haxn bruh</title><script type='text/javascript'>setTimeout(function(){window.location.href='/login';}, 10000);</script></head><body>That wasnt the password...quit haxn bruh</body></html>"
+ return "<html><head><title>&nbsp;:&nbsp;TRM Login&nbsp;:&nbsp;</title></head><body><form method='POST' action='/login'>Email: <input type='text' name='username'><br>Passwd: <input type='password' name='passwd'><br><input type='submit' value='What my stats?'></form></body></html>"
 
 @app.route("/trm/<collection>/<sortmethod>/<start>/<num>")
 def trm(**demArgs):
+ if loggedIn() == False:
+  return redirect('/login')
+ demArgs['displayname'] = loggedIn()['displayname']
  return render_template('view.html', **demArgs)
 
 def mongoconvert(table, data):
@@ -28,6 +74,8 @@ def mongoconvert(table, data):
 
 @app.route("/update/<collection>", methods=["POST"])
 def updateTable(collection):
+  if loggedIn() == False:
+   return redirect('/login')
   b = getattr(models, collection.title())
   print repr(request.form.get('id'))
   if request.form.get('id') != '':
@@ -54,10 +102,14 @@ def updateTable(collection):
 
 @app.route("/remove/<collection>/<thatid>")
 def removeRow(collection, thatid):
+  if loggedIn() == False:
+   return redirect('/login')
   return str(getattr(models, collection.title()).objects(id=thatid)[0].delete())
 
 @app.route("/one/<collection>/<column>/<value>")
 def getOrder(collection, column, value):
+ if loggedIn() == False:
+  return redirect('/login')
  xyz = {}
  y = getattr(models, collection.title()).objects(**{column: value})[0]
  for x in y:
@@ -79,6 +131,8 @@ def getOrders(collection, sortmethod, start, num):
 
 @app.route("/columns/<collection>")
 def getColumns(collection):
+ if loggedIn() == False:
+  return redirect('/login')
  x = getattr(models, collection.title()).objects().limit(1)[0]
  z = {}
  c = 0
@@ -89,6 +143,10 @@ def getColumns(collection):
 
 @app.route("/get/affid/<affid>")
 def getByAffid(affid):
+ if loggedIn() == False:
+  return redirect('/login')
+ if affid == "me":
+  affid = loggedIn()['affid']
  visitors = {'notengage': {'bought': models.Visitor.objects(c1=affid, engage=False, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=False, conversion=False).count()},
              'engage': {'bought': models.Visitor.objects(c1=affid, engage=True, conversion=True).count(), 'notbought': models.Visitor.objects(c1=affid, engage=True, conversion=False).count()}}
  orders = {}

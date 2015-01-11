@@ -1,5 +1,6 @@
 from flask import request, jsonify, Flask
 from tMail import tMail
+from createsend import Subscriber
 import processing, models, json, datetime, os.path
 
 app = Flask(__name__)
@@ -57,7 +58,7 @@ def apiCustomer():
 
 @app.route("/api/update/customer/<cid>", methods=["POST"])
 def apiUpdateCustomer(cid):
-    oldguy = models.Customer.orders(id=cid)
+    oldguy = models.Customer.objects(id=cid)
     for x in request.args['fields'].split(','):
         oldguy[x] = request.form[x]
     oldguy.save()
@@ -71,11 +72,17 @@ def apiCard():
 
 @app.route("/api/update/card/<cid>", methods=["POST"])
 def apiUpdateCard(cid):
-    oldcard = models.Creditcard.objects(id=cid)
+    oldcard = models.Creditcard.objects(id=cid)[0]
     for x in request.args['fields'].split(','):
         oldcard[x] = request.form[x]
     oldcard.save()
     return str(oldcard.id)
+
+@app.route("/api/listme/<listid>/<cid>")
+def apiListMe(listid, cid):
+    oldguy = models.Customer.objects(id=cid)[0]
+    return str(Subscriber({'api_key':"faf2f9d82420bc0db8c91fbf08099d8e"}).add(listid, oldguy['email'], oldguy['fname'], [], False))
+
 
 @app.route("/api/orderWithCard/<processor>/<customerid>", methods=["POST"])
 def apiOrderWithCard(processor, customerid):

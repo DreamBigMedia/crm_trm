@@ -4,6 +4,12 @@ import datetime
 
 connect('trm')
 
+class Affiliate(Document):
+ username = StringField()
+ pwhash = StringField()
+ affid = StringField()
+ displayname = StringField()
+
 class Customer(Document):
  fname = StringField()
  lname = StringField( )
