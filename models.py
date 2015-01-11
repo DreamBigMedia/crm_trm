@@ -90,6 +90,7 @@ class NMIAccount(Document):
  username = StringField()
  password = StringField()
  batchmax = IntField(default=0)
+ prod_id = StringField()
 
 Nmiaccount = NMIAccount # for rest api
 
@@ -99,6 +100,7 @@ class Rebill(Document):
  pid = StringField()
  date = StringField()
  batched = BooleanField(default=False)
+ affid = StringField()
 
 class Smtpserver(Document):
  storeid = StringField(default="")

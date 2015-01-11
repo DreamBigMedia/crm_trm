@@ -83,7 +83,6 @@ def apiListMe(listid, cid):
     oldguy = models.Customer.objects(id=cid)[0]
     return str(Subscriber({'api_key':"faf2f9d82420bc0db8c91fbf08099d8e"}).add(listid, oldguy['email'], oldguy['fname'], [], False))
 
-
 @app.route("/api/orderWithCard/<processor>/<customerid>", methods=["POST"])
 def apiOrderWithCard(processor, customerid):
     try:
@@ -186,12 +185,12 @@ def apiOrderWithCard(processor, customerid):
                                  'c3': request.form.get('c3'),
                                  'ip': remoteaddr,
                                  'orderpage': request.form['orderpage']}).process()
-    else:
+    else: #### its not those shitty ones, lets try nmi directly? ####
         try:
             mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
         except:
             mailservs = models.Smtpserver.objects()[0]
-        try: #### its not those shitty ones, lets try nmi directly? ####
+        try:
             prod = models.Product.objects(id= request.form['pid'])[0]
         except:
             return jsonify({"success": False, "cc_response": "invalid product id"})
@@ -204,7 +203,7 @@ def apiOrderWithCard(processor, customerid):
         else:
             prodname = prod['name']
             prodamount = float(prod['init_price'])
-        nmiaccount = models.NMIAccount.objects(id=processor)[0]
+        nmiaccount = models.NMIAccount.objects(prod_id=str(prod.id))[0]
         process = processing.NMI({'cc_number': newcard['card_number'],
                                  'cc_exp': newcard['exp_month']+newcard['exp_year'],
                                  'cc_cvv': newcard['ccv'],
@@ -219,7 +218,7 @@ def apiOrderWithCard(processor, customerid):
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
         if prod['salestype'] == 'trial':
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
-            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
+            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'))
             x.save()
         sm = tMail(mailservs['host'], mailservs['port'])
         sm.login(mailservs['username'], mailservs['password'], oldguy['email'])
@@ -373,7 +372,7 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
         if prod['salestype'] == 'trial':
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
-            x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"))
+            x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'))
             x.save()
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
