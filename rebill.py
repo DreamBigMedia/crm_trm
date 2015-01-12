@@ -28,7 +28,7 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 	prod = models.Product.objects(id=x['pid'])[0]
 	prodname = prod['name']
 	prodamount = float(prod['rebill_price'])
-	nmiaccount = processorCycle()
+	nmiaccount = models.NMIAccount.objects(prod_id=x['pid'])[0]
 	print oldguy['fname']+"\t"+oldguy['lname']
 	print oldcard['card_number'][:4]+('*'*8)+oldcard['card_number'][-4:]
 	print oldcard['exp_month']+"/"+oldcard['exp_year']
