@@ -3,6 +3,11 @@ import processing, models, json, datetime, hashlib
 
 app = Flask(__name__)
 
+@app.route("/sample/affid/thing")
+def sample():
+	return jsonify({'visitors': {'engage': {'notbought': 5, 'bought': 3}, 'notengage': {'notbought': 10, 'bought': 1}}, 'products': {'549e2aba09d024031841af28': {'type': 'trial', 'name': 'Triangle Product', 'sales': 3}}})
+
+
 loggedinusers = {}
 def loggedIn():
     cookie = request.cookies.get('lgnCookie')
