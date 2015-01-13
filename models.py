@@ -101,6 +101,7 @@ class Rebill(Document):
  date = StringField()
  batched = BooleanField(default=False)
  affid = StringField()
+ retrynum = IntField(default=0)
 
 class Smtpserver(Document):
  storeid = StringField(default="")

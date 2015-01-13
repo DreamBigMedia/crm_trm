@@ -124,7 +124,10 @@ def getOrders(collection, sortmethod, start, num):
  for y in x:
    xyz = {}
    for x in y:
-    xyz[x] = str(y[x])
+    try:
+     xyz[x] = str(y[x])
+    except:
+     xyz[x] = unicode(y[x], 'utf-8')
    z[c] = xyz
    c += 1
  return jsonify(z)

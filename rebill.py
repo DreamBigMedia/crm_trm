@@ -47,11 +47,16 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 				'postal': str(oldcard['billing_zipcode']),
 				'email': oldguy['email'],
 				'ip': '127.0.0.1'}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
-	print "approved: "+str(process.success)+"\n"
+	if process.success:
+		print "approved: "+str(process.success)+"\n" #schedule for next rebill date
+		future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays']-x['retrynum'])
+		theretrynum = 0
+	else:
+		future = datetime.datetime.now() + datetime.timedelta(days=1) #retry tomorrow
+		theretrynum = x['retrynum'] + 1
 	x['batched'] = True
 	x.save()
-	future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
-	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"))
+	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"), retrynum=theretrynum)
 	x.save()
 	neworder = models.Order(creditcard=str(oldcard.id), products=x['pid'], tracking="rebill", order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
 	neworder.save()

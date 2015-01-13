@@ -218,7 +218,7 @@ def apiOrderWithCard(processor, customerid):
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
         if prod['salestype'] == 'trial':
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
-            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'))
+            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'), retrynum=0)
             x.save()
         sm = tMail(mailservs['host'], mailservs['port'])
         sm.login(mailservs['username'], mailservs['password'], oldguy['email'])
