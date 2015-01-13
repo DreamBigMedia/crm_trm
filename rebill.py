@@ -1,35 +1,14 @@
 import models, time, datetime, processing
-
-MAX_RETRIES_MAIL = 5
-
-thisran = 0
-currproc = 0
-processors = models.NMIAccount.objects()
-def processorCycle():
-	global thisran
-	global currproc
-	if thisran >= processors[currproc].batchmax:
-		currproc += 1
-		thisran = 0
-		while thisran >= processors[currproc].batchmax:
-			currproc += 1
-			if currproc >= len(processors):
-				currproc = 0
-				print "restarting from processor #0"
-	if currproc >= len(processors):
-		currproc = 0
-		print "restarting from processor #0"
-	thisran += 1
-	print "processor: "+str(processors[currproc])
-	return processors[currproc]
+from nmi_utils import nmiSelect
 
 for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 	oldcard = models.Creditcard.objects(id=x['card'])[0]
 	oldguy = models.Customer.objects(id=x['customer'])[0]
-	prod = models.Product.objects(id=x['pid'])[0]
+	n = nmiSelect(x['pid'], x['nmi_id'])
+	prod = n['prod']
 	prodname = prod['name']
 	prodamount = float(prod['rebill_price'])
-	nmiaccount = models.NMIAccount.objects(id=x['nmi_id'])[0]
+	nmiaccount = n['prod']
 	print oldguy['fname']+"\t"+oldguy['lname']
 	print oldcard['card_number'][:4]+('*'*8)+oldcard['card_number'][-4:]
 	print oldcard['exp_month']+"/"+oldcard['exp_year']

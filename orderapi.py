@@ -1,5 +1,6 @@
 from flask import request, jsonify, Flask
 from tMail import tMail
+from nmi_utils import nmiSelect
 from createsend import Subscriber
 import processing, models, json, datetime, os.path
 
@@ -190,21 +191,22 @@ def apiOrderWithCard(processor, customerid):
             mailservs = models.Smtpserver.objects(storeid=request.form.get('storeid'))[0]
         except:
             mailservs = models.Smtpserver.objects()[0]
+	if request.form.get('quantity') == '':
+		prod_q = 1
+	else:
+		prod_q = int(request.form['quantity'])
         try:
-            prod = models.Product.objects(id= request.form['pid'])[0]
+            chosen = nmiSelect(request.form['pid'], quantity=prod_q)
+            prod = chosen['prod']
+            nmiaccount = chosen['nmi']
         except:
             return jsonify({"success": False, "cc_response": "invalid product id"})
-        if request.form.get('quantity') == '':
-            prodname = prod['name']
-            prodamount = float(prod['init_price'])
-        elif int(request.form['quantity']) > 1:
-            prodname = prod['name'] + " x"+request.form['quantity']
-            prodamount = float(prod['init_price']*int(request.form['quantity']))
+        if prod_q > 1:
+            prodname = prod['name'] + " x"+str(prod_q)
+            prodamount = float(prod['init_price']*prod_q)
         else:
             prodname = prod['name']
             prodamount = float(prod['init_price'])
-	n = models.NMIAccount.objects(prod_id=str(prod.id)))
-        nmiaccount = n.limit(1).skip(random.randint(0,n.count()-1)).next()
         process = processing.NMI({'cc_number': newcard['card_number'],
                                  'cc_exp': newcard['exp_month']+newcard['exp_year'],
                                  'cc_cvv': newcard['ccv'],
