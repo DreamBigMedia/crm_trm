@@ -1,5 +1,6 @@
 import models, time, datetime, processing
 
+MAX_RETRIES_MAIL = 5
 
 thisran = 0
 currproc = 0
@@ -28,7 +29,7 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 	prod = models.Product.objects(id=x['pid'])[0]
 	prodname = prod['name']
 	prodamount = float(prod['rebill_price'])
-	nmiaccount = models.NMIAccount.objects(prod_id=x['pid'])[0]
+	nmiaccount = models.NMIAccount.objects(id=x['nmi_id'])[0]
 	print oldguy['fname']+"\t"+oldguy['lname']
 	print oldcard['card_number'][:4]+('*'*8)+oldcard['card_number'][-4:]
 	print oldcard['exp_month']+"/"+oldcard['exp_year']
@@ -54,9 +55,28 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 	else:
 		future = datetime.datetime.now() + datetime.timedelta(days=1) #retry tomorrow
 		theretrynum = x['retrynum'] + 1
+	if (x['retrynum'] >= MAX_RETRY_MAIL) and (not process.success):
+		try:
+			mailservs = models.Smtpserver.objects(storeid=str(nmiaccount['id']))[0]
+		except:
+			mailservs = models.Smtpserver.objects()[0]
+		sm = tMail(mailservs['host'], mailservs['port'])
+		sm.login(mailservs['username'], mailservs['password'], oldguy['email'])
+		with open(os.path.join('emails', mailservs['theme'], 'updatecard.html')) as fd:
+			macros = {'fname': oldguy['fname'],
+				'lname': oldguy['lname'],
+				'email': oldguy['email'],
+				'prod': prodname,
+				'total': str(prodamount),
+				'ccnum': ('*'*12)+newcard['card_number'][-4:],
+				'decline_times': x['retrynum']}
+			email = fd.read()
+			for x in macros.keys():
+				email = email.replace("{"+x+"}", macros[x])
+			sm.send(email)
 	x['batched'] = True
 	x.save()
 	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"), retrynum=theretrynum)
 	x.save()
-	neworder = models.Order(creditcard=str(oldcard.id), products=x['pid'], tracking="rebill", order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+	neworder = models.Order(creditcard=str(oldcard.id), products=x['pid'], tracking="rebill", order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, nmi_id=x['nmi_id'])
 	neworder.save()

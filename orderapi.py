@@ -203,7 +203,8 @@ def apiOrderWithCard(processor, customerid):
         else:
             prodname = prod['name']
             prodamount = float(prod['init_price'])
-        nmiaccount = models.NMIAccount.objects(prod_id=str(prod.id))[0]
+	n = models.NMIAccount.objects(prod_id=str(prod.id)))
+        nmiaccount = n.limit(1).skip(random.randint(0,n.count()-1)).next()
         process = processing.NMI({'cc_number': newcard['card_number'],
                                  'cc_exp': newcard['exp_month']+newcard['exp_year'],
                                  'cc_cvv': newcard['ccv'],
@@ -218,7 +219,7 @@ def apiOrderWithCard(processor, customerid):
                                  'ip': remoteaddr}, nmiaccount.username, nmiaccount.password, nmiaccount.url).process()
         if prod['salestype'] == 'trial':
             future = datetime.datetime.now() + datetime.timedelta(days=prod['rebilldays'])
-            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'), retrynum=0)
+            x = models.Rebill(card=str(newcard.id), customer=str(oldguy.id), pid=request.form['pid'], date=future.strftime("%d/%m/%Y"), affid=request.form.get('affid'), retrynum=0, nmi_id=str(nmiaccount['id']))
             x.save()
         sm = tMail(mailservs['host'], mailservs['port'])
         sm.login(mailservs['username'], mailservs['password'], oldguy['email'])

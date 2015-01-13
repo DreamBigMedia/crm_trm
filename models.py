@@ -102,6 +102,7 @@ class Rebill(Document):
  batched = BooleanField(default=False)
  affid = StringField()
  retrynum = IntField(default=0)
+ nmi_id = StringField()
 
 class Smtpserver(Document):
  storeid = StringField(default="")
