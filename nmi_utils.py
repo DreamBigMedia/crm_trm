@@ -2,7 +2,6 @@ import models
 from random import randint
 
 def nmiSelect(prod_id, curr_id=False):
-	z = y['rebill_price'] if curr_id == False else y['init_price']
 	if curr_id == False:
 		n = models.NMIAccount.objects(prod_id=str(prod_id)))
         	x = n.limit(1).skip(randint(0,n.count()-1)).next()
