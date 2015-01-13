@@ -92,6 +92,7 @@ class NMIAccount(Document):
  batchmax = IntField(default=0)
  month_limit = FloatField(default=0.0)
  month_charged = FloatField(default=0.0)
+ month_willbill = FloatField(default=0.0)
  prod_id = StringField()
 
 Nmiaccount = NMIAccount # for rest api
