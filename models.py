@@ -43,6 +43,7 @@ class Creditcard(Document):
 
 class Product(Document):
  name = StringField(default="")
+ skus = StringField(default="unknown")
  salestype = StringField(choices=["straight","trial"])
  rebilldays = IntField(default=0)
  init_price = FloatField(default=0.00)
