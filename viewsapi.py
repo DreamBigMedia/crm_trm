@@ -16,6 +16,12 @@ app.logger.addHandler(handler)
 def sample():
 	return jsonify({'visitors': {'engage': {'notbought': 5, 'bought': 3}, 'notengage': {'notbought': 10, 'bought': 1}}, 'products': {'549e2aba09d024031841af28': {'type': 'trial', 'name': 'Triangle Product', 'sales': 3}}})
 
+@app.route("/sample/stats/<start>/<end>/<affid>")
+def samplestats(start, end, affid):
+	d1=datetime.datetime.strptime(start, '%m-%d-%Y')
+	d2=datetime.datetime.strptime(end, '%m-%d-%Y')
+	return jsonify({"": {}, "id_1/id_2/id_3": {"clicks": 14, "partials": 2, "sales": 1}, "strausburg//None": {"clicks": 209, "partials": 93, "sales": 66}, "hamilton//strange": {"clicks": 209, "partials": 93, "sales": 66}})
+
 @app.route('/stats/<path:filename>')
 def send_foo(filename):
     if loggedIn() == False:
@@ -125,6 +131,25 @@ def removeRow(collection, thatid):
    return redirect('/login')
   return str(getattr(models, collection.title()).objects(id=thatid)[0].delete())
 
+@app.route("/stats/daterange/<start>/<end>/<affid>")
+def stateDaterange(start, end, affid):
+ d1=datetime.datetime.strptime(start, '%m-%d-%Y')
+ d2=datetime.datetime.strptime(end, '%m-%d-%Y')
+ print str(d1)+"\t"+str(d2)
+ w = models.Visitor.objects(affid=affid, visit_date__gte=d1, visit_date__lte=d2)
+ u = {'': {}}
+ for v in w:
+  cval = "/".join([str(v['c1']), str(v['c2']), str(v['c3'])])
+  if cval not in u.keys():
+   u[cval] = {'clicks': 0,'partials': 0,'sales': 0}
+  u[cval]['clicks'] += 1
+  if v['conversion']:
+   u[cval]['sales'] += 1
+  elif v['lead']:
+   u[cval]['partials'] += 1
+ return jsonify(u)
+
+
 @app.route("/one/<collection>/<column>/<value>")
 def getOrder(collection, column, value):
  if loggedIn() == False:
@@ -182,6 +207,15 @@ def getColumns(collection):
   z[c] = y
   c += 1
  return jsonify(z)
+
+@app.route("/get/affids")
+def getAffids():
+ if loggedIn() == False:
+  return redirect('/login')
+ aid = []
+ for x in models.Affiliates.objects():
+  aid += x['affid']
+ return jsonify(aid)
 
 @app.route("/get/affid/<affid>")
 def getByAffid(affid):
