@@ -1,12 +1,12 @@
 $(document).ready(function(){
 	// http://162.218.236.81:30303/get/affid/me
-	$.post("http://162.218.236.81:30303/sample/affid/me", {}, function(data){
+	$.get("http://162.218.236.81:30303/get/affid/me", {}, function(data){
 		
 		/*
 		*	for products chart
 		*/
 		var products_data_points = [];
-		var products_obj = JSON.parse(data);
+		var products_obj = data;
 		for(var obj in products_obj.products){
 			var product_ob = {label:products_obj.products[obj].name,y:products_obj.products[obj].sales};
 			products_data_points.push(product_ob);
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		*	for engage visitors chart
 		*/
 		var engage_visitors_data_points = [];
-		var ev_obj = JSON.parse(data);
+		var ev_obj = data;
 		engage_visitors_data_points.push({label:"bought",y:ev_obj.visitors.engage.bought});
 		engage_visitors_data_points.push({label:"not bought",y:ev_obj.visitors.engage.notbought});
 		var ev_chart = new CanvasJS.Chart("engage_visitors_chart");
@@ -38,7 +38,7 @@ $(document).ready(function(){
 		*	for not engage visitors chart
 		*/
 		var not_engage_visitors_data_points = [];
-		var nev_obj = JSON.parse(data);
+		var nev_obj = data;
 		not_engage_visitors_data_points.push({label:"bought",y:nev_obj.visitors.notengage.bought});
 		not_engage_visitors_data_points.push({label:"not bought",y:nev_obj.visitors.notengage.notbought});
 		var nev_chart = new CanvasJS.Chart("not_engage_visitors_chart");
@@ -61,7 +61,7 @@ $(document).ready(function(){
 		
 		$("#engage_visitors_chart_select").on("change", function(){
 			var engage_visitors_data_points = [];
-			var ev_obj = JSON.parse(data);
+			var ev_obj = data;
 			engage_visitors_data_points.push({label:"bought",y:ev_obj.visitors.engage.bought});
 			engage_visitors_data_points.push({label:"not bought",y:ev_obj.visitors.engage.notbought});
 			var ev_chart = new CanvasJS.Chart("engage_visitors_chart");
@@ -75,7 +75,7 @@ $(document).ready(function(){
 		
 		$("#not_engage_visitors_chart_select").on("change", function(){
 			var not_engage_visitors_data_points = [];
-			var nev_obj = JSON.parse(data);
+			var nev_obj = data;
 			not_engage_visitors_data_points.push({label:"bought",y:nev_obj.visitors.notengage.bought});
 			not_engage_visitors_data_points.push({label:"not bought",y:nev_obj.visitors.notengage.notbought});
 			var nev_chart = new CanvasJS.Chart("not_engage_visitors_chart");
