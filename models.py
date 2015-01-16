@@ -49,6 +49,13 @@ class Product(Document):
  init_price = FloatField(default=0.00)
  rebill_price = FloatField(default=0.00)
 
+class Lead(Document):
+ cust_id = StringField()
+ affid = StringField()
+ uniqid = StringField()
+ orderpage = StringField()
+ 
+
 class Order(Document):
  order_number = SequenceField(unique=True)
  creditcard = StringField()
@@ -83,6 +90,9 @@ class Visitor(Document):
  referer = StringField()
  convert = StringField()
  lander = StringField()
+ visit_date = DateTimeField()
+ pagehits = IntField()
+ affid = StringField()
  uniqid = StringField()
 
 class NMIAccount(Document):

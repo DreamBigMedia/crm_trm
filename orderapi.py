@@ -31,7 +31,15 @@ def track():
   remoteaddr = request.headers['X-Forwarded-For'].strip()
  if ', ' in remoteaddr:
   remoteaddr = remoteaddr.split(', ')[1]
- visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr)
+ if models.Visitor.objects(uniqid=vid).count() >0:
+  visitor = models.Visitor.objects(uniqid=vid)[0]
+  if type(visitor['pagehits']) == type(None):
+   visitor['pagehits'] = 0
+  if type(visitor['affid']) == type(None):
+   visitor['affid'] = c1
+  visitor['pagehits'] += 1
+ else:
+  visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr, pagehits=1, visit_date=datetime.datetime.now(), affid=c1)
  visitor.save()
  vi = str(visitor.id)
  return vi

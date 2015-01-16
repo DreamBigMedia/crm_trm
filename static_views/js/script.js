@@ -12,7 +12,7 @@ function getStats(affid) {
 		}
 		var products_chart = new CanvasJS.Chart("products_chart");
 		products_chart.options.title = {text:""};
-		var products_series = {type:"column",name:"products"};
+		var products_series = {type:$("#sales_chart").val(),name:"products"};
 		products_chart.options.data = [];
 		products_chart.options.data.push(products_series);
 		products_series.dataPoints = products_data_points;
@@ -27,7 +27,7 @@ function getStats(affid) {
 		engage_visitors_data_points.push({label:"not bought",y:ev_obj.visitors.engage.notbought});
 		var ev_chart = new CanvasJS.Chart("engage_visitors_chart");
 		ev_chart.options.title = {text:""};
-		var ev_series = {type:"column",name:"engage_visitors"};
+		var ev_series = {type:$("#engage_visitors_chart_select").val(),name:"engage_visitors"};
 		ev_chart.options.data = [];
 		ev_chart.options.data.push(ev_series);
 		ev_series.dataPoints = engage_visitors_data_points;
@@ -42,7 +42,7 @@ function getStats(affid) {
 		not_engage_visitors_data_points.push({label:"not bought",y:nev_obj.visitors.notengage.notbought});
 		var nev_chart = new CanvasJS.Chart("not_engage_visitors_chart");
 		nev_chart.options.title = {text:""};
-		var nev_series = {type:"column",name:"not_engage_visitors"};
+		var nev_series = {type:$("#not_engage_visitors_chart_select").val(),name:"not_engage_visitors"};
 		nev_chart.options.data = [];
 		nev_chart.options.data.push(nev_series);
 		nev_series.dataPoints = not_engage_visitors_data_points;
