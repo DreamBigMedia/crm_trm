@@ -2,6 +2,7 @@ from flask import request, jsonify, Flask
 from tMail import tMail
 from nmi_utils import nmiSelect
 from createsend import Subscriber
+from hashtag import ShipOrder
 import processing, models, json, datetime, os.path, logging
 
 app = Flask(__name__)
@@ -253,6 +254,15 @@ def apiOrderWithCard(processor, customerid):
     neworder.save()
     visid = "didnt convert"
     if process.success:
+      if process.mytype == "nmi":
+        if ',' in prod['skus']:
+          o=prod['skus'].split(',')
+          p=[]
+          for n in o:
+            p += [{'sku':n, 'qty':prod_q}]
+        else:
+          p=[{'sku':prod['skus'], 'qty':prod_q}]
+        ShipOrder(str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
       oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr, conversion=False)[0]
       oldvisitor['conversion'] = True
       oldvisitor['convert'] = request.form['pid']
@@ -387,6 +397,15 @@ def apiOrderNoCard(processor, customerid, cardid):
             x.save()
     neworder = models.Order(creditcard=str(oldcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
     neworder.save()
+    if process.success and (process.mytype == "nmi"):
+      if ',' in prod['skus']:
+        o=prod['skus'].split(',')
+        p=[]
+        for n in o:
+          p += [{'sku':n, 'qty':prod_q}]
+      else:
+        p=[{'sku':prod['skus'], 'qty':prod_q}]
+      ShipOrder(str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
     return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
 
 if __name__=="__main__":
