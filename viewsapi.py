@@ -151,8 +151,8 @@ def getOrders(collection, sortmethod, start, num):
    c += 1
  return jsonify(z)
 
-@app.route("/find/<collection>/<sortmethod>/<int:start>/<int:num>/<query>")
-def getOrders(collection, sortmethod, start, num, query):
+@app.route("/filter/<collection>/<sortmethod>/<int:start>/<int:num>/<query>")
+def filterResult(collection, sortmethod, start, num, query):
  q_t = parse_qs(query)
  q = {}
  for x in q_t:
