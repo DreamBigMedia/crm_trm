@@ -1,6 +1,5 @@
-$(document).ready(function(){
-	// http://162.218.236.81:30303/get/affid/me
-	$.get("http://162.218.236.81:30303/get/affid/me", {}, function(data){
+function getStats(affid) {
+	$.get("http://162.218.236.81:30303/get/affid/"+affid, {}, function(data){
 		
 		/*
 		*	for products chart
@@ -94,6 +93,11 @@ $(document).ready(function(){
 		
 		
 	});
+}
+
+$(document).ready(function(){
+	// http://162.218.236.81:30303/get/affid/me
+	getStats("me");
 });
 
 
