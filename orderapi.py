@@ -270,7 +270,7 @@ def apiOrderWithCard(processor, customerid):
             p += [{'sku':n, 'qty':prod_q}]
         else:
           p=[{'sku':prod['skus'], 'qty':prod_q}]
-        ShipOrder(str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
+        ShipOrder("T1_"+str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
       oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr, conversion=False)[0]
       oldvisitor['conversion'] = True
       oldvisitor['convert'] = request.form['pid']
