@@ -58,4 +58,6 @@ def ShipOrder(refnum, name, address1, address2, city, state, postal, country, pr
 	#print c.last_sent()
 
 if __name__=="__main__":
-	ShipOrder("TEST"+str(randint(1000,9999), "Testing McFixinStuff", "5 w seventh wei", None, "Burbank", "CA", "90001", "US", [{'sku': 'Louv1', 'qty': 1}, {'sku': 'Louv2', 'qty': 1}], "Test order. Do not ship.")
+	ShipOrder("TEST"+str(randint(1000,9999)), "Testing McFixinStuff", "5 w seventh wei", None, "Burbank", "CA", "90001", "US", [{'sku': 'Louv1', 'qty': 1}, {'sku': 'Louv2', 'qty': 1}], "Test order. Do not ship.")
+
+
