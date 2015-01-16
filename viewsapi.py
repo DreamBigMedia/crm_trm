@@ -1,4 +1,5 @@
 from flask import request, jsonify, Flask, render_template, redirect, send_from_directory
+from urlparse import parse_qs
 import processing, models, json, datetime, hashlib, logging
 
 app = Flask(__name__)
@@ -137,6 +138,26 @@ def getOrder(collection, column, value):
 @app.route("/all/<collection>/<sortmethod>/<int:start>/<int:num>")
 def getOrders(collection, sortmethod, start, num):
  x = getattr(models, collection.title()).objects().order_by(sortmethod).skip(start).limit(num)
+ z = {}
+ c = 0
+ for y in x:
+   xyz = {}
+   for x in y:
+    try:
+     xyz[x] = str(y[x])
+    except:
+     xyz[x] = unicode(y[x], 'utf-8')
+   z[c] = xyz
+   c += 1
+ return jsonify(z)
+
+@app.route("/find/<collection>/<sortmethod>/<int:start>/<int:num>/<query>")
+def getOrders(collection, sortmethod, start, num, query):
+ q_t = parse_qs(query)
+ q = {}
+ for x in q_t:
+  q[x] = q_t[x][0]
+ x = getattr(models, collection.title()).objects(**q).order_by(sortmethod).skip(start).limit(num)
  z = {}
  c = 0
  for y in x:
