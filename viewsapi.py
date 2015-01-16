@@ -1,12 +1,25 @@
-from flask import request, jsonify, Flask, render_template, redirect
-import processing, models, json, datetime, hashlib
+from flask import request, jsonify, Flask, render_template, redirect, send_from_directory
+import processing, models, json, datetime, hashlib, logging
 
 app = Flask(__name__)
+
+logger = logging.getLogger('werkzeug')
+handler = logging.FileHandler('views.log')
+logger.addHandler(handler)
+
+# Also add the handler to Flask's logger for cases
+#  where Werkzeug isn't used as the underlying WSGI server.
+app.logger.addHandler(handler)
 
 @app.route("/sample/affid/thing")
 def sample():
 	return jsonify({'visitors': {'engage': {'notbought': 5, 'bought': 3}, 'notengage': {'notbought': 10, 'bought': 1}}, 'products': {'549e2aba09d024031841af28': {'type': 'trial', 'name': 'Triangle Product', 'sales': 3}}})
 
+@app.route('/stats/<path:filename>')
+def send_foo(filename):
+    if loggedIn() == False:
+     return redirect('/login')
+    return send_from_directory('./static_views/', filename)
 
 loggedinusers = {}
 def loggedIn():
@@ -49,7 +62,7 @@ def loginPage():
  if request.method=="POST":
   x = logIn(request.form['username'], request.form['passwd'])
   if x != False: 
-   r = app.make_response(redirect("/trm/product/$natural/0/50"))
+   r = app.make_response(redirect("/stats/index.html"))
    r.set_cookie("lgnCookie", value=x)
    return r
   return "<html><head><title>WRONG PASSWORD quit haxn bruh</title><script type='text/javascript'>setTimeout(function(){window.location.href='/login';}, 10000);</script></head><body>That wasnt the password...quit haxn bruh</body></html>"

@@ -2,9 +2,17 @@ from flask import request, jsonify, Flask
 from tMail import tMail
 from nmi_utils import nmiSelect
 from createsend import Subscriber
-import processing, models, json, datetime, os.path
+import processing, models, json, datetime, os.path, logging
 
 app = Flask(__name__)
+
+logger = logging.getLogger('werkzeug')
+handler = logging.FileHandler('order.log')
+logger.addHandler(handler)
+
+# Also add the handler to Flask's logger for cases
+#  where Werkzeug isn't used as the underlying WSGI server.
+app.logger.addHandler(handler)
 
 @app.route('/track/')
 def track():

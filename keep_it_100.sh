@@ -1,3 +1,3 @@
 #!/bin/bash
 
-watch -n 30 "bash watch_port.sh"
+watch -n 5 "bash watch_port.sh"
