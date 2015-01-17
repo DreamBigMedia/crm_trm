@@ -178,6 +178,8 @@ def getOrders(collection, sortmethod, start, num):
 
 @app.route("/filter/<collection>/<sortmethod>/<int:start>/<int:num>/<query>")
 def filterResult(collection, sortmethod, start, num, query):
+ if loggedIn() == False:
+  return redirect('/login')
  q_t = parse_qs(query)
  q = {}
  for x in q_t:
