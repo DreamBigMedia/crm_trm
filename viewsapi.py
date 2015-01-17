@@ -141,10 +141,12 @@ def stateDaterange(start, end, affid):
  for v in w:
   cval = "/".join([str(v['c1']), str(v['c2']), str(v['c3'])])
   if cval not in u.keys():
-   u[cval] = {'clicks': 0,'partials': 0,'sales': 0}
+   u[cval] = {'clicks': 0,'partials': 0,'sales': 0,'upsales': 0}
   u[cval]['clicks'] += 1
   if v['conversion']:
    u[cval]['sales'] += 1
+   if v['upsell']:
+    u[cval]['upsales'] += 1
   elif v['lead']:
    u[cval]['partials'] += 1
  return jsonify(u)
@@ -183,6 +185,11 @@ def filterResult(collection, sortmethod, start, num, query):
  q_t = parse_qs(query)
  q = {}
  for x in q_t:
+  try:
+   if getattr(models, collection.title())()[x].__class__ == type(True):
+    q_t[x][0] = bool(q_t[x][0])
+  except:
+   pass
   q[x] = q_t[x][0]
  x = getattr(models, collection.title()).objects(**q).order_by(sortmethod).skip(start).limit(num)
  z = {}
@@ -230,9 +237,14 @@ def getByAffid(affid):
  orders = {}
  for x in models.Order.objects(affid=affid):
   if x['products'] not in orders.keys():
-   orders[x['products']] = {'sales': 0,
+   try:
+    orders[x['products']] = {'sales': 0,
                        'name': models.Product.objects(id=x['products'])[0]['name'],
                        'type': models.Product.objects(id=x['products'])[0]['salestype']}
+   except:
+    orders[x['products']] = {'sales': 0,
+                       'name': x['products'],
+                       'type': 'trial'}
   orders[x['products']]['sales'] += 1
  return jsonify({'products': orders, 'visitors': visitors})
  

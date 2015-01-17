@@ -39,6 +39,7 @@ class Creditcard(Document):
  billing_state = StringField()
  billing_zipcode = IntField()
  active_card = StringField()
+ cust_id = StringField(default="0")
  # orders = Set("Order")
 
 class Product(Document):
@@ -83,12 +84,14 @@ class Visitor(Document):
  trafficsource = StringField(default="unknown")
  optin_time = StringField(default="never")
  conversion = BooleanField(default=False)
+ upsell = BooleanField(default=False)
  engage = BooleanField(default=False)
  lead = BooleanField(default=False)
  useragent = StringField()
  remoteaddr = StringField()
  referer = StringField()
  convert = StringField()
+ upsell_convert = StringField()
  lander = StringField()
  visit_date = DateTimeField()
  pagehits = IntField()

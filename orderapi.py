@@ -1,4 +1,5 @@
 from flask import request, jsonify, Flask
+from minFraud import minFraud
 from tMail import tMail
 from nmi_utils import nmiSelect
 from createsend import Subscriber
@@ -39,7 +40,7 @@ def track():
    visitor['affid'] = c1
   visitor['pagehits'] += 1
  else:
-  visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr, pagehits=1, visit_date=datetime.datetime.now(), affid=c1)
+  visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr, pagehits=1, visit_date=datetime.datetime.now(), affid=c1, upsell=False)
  visitor.save()
  vi = str(visitor.id)
  return vi
@@ -122,7 +123,7 @@ def apiOrderWithCard(processor, customerid):
     except:
         bill_zip = 0
     print str(bill_zip)
-    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_state=request.form.get('billing_state'), billing_zipcode=bill_zip)
+    newcard = models.Creditcard(card_number=request.form['card_number'], ccv=request.form['cvv'], exp_month=request.form['exp_month'], exp_year=request.form['exp_year'], billing_address1=request.form.get('billing_address1'), billing_address2=request.form.get('billing_address2'), billing_city=request.form.get('billing_city'), billing_state=request.form.get('billing_state'), billing_zipcode=bill_zip, cust_id=customerid)
     if billingsame:
         newcard.billing_address1 = oldguy['ship_address1']
         newcard.billing_address2 = oldguy['ship_address2']
@@ -132,6 +133,10 @@ def apiOrderWithCard(processor, customerid):
         newcard.billing_country = 'us'
     newcard.save()
     print str(newcard.id)
+    rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
+    print "MaxMind riskScore: "+str(rscore)
+    if rscore >= 5.55:
+     return jsonify({"success": False, "cc_response": "High fraud risk"})
     if processor == "ucrm":
         if billingsame:
           bsame = 'yes'
@@ -414,6 +419,10 @@ def apiOrderNoCard(processor, customerid, cardid):
       else:
         p=[{'sku':prod['skus'], 'qty':prod_q}]
       ShipOrder(str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
+      oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr)[0]
+      oldvisitor['upsell'] = True
+      oldvisitor['upsell_convert'] = request.form['pid']
+      oldvisitor.save()
     return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
 
 if __name__=="__main__":

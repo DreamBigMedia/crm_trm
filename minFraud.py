@@ -20,7 +20,7 @@ def minFraud(ip, bcity, bstate, bzip, bcountry, scity, sstate, szip, scountry, e
 		'bin': cc[:6],
 		'user_agent': ua,
 		'accept_language': accept_language,
-		'shopID': storid}
+		'shopID': storeid}
 	x= requests.post(u, params).text
 	retval = {}
 	for y in x.split(';'):
