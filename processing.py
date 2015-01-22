@@ -1,4 +1,5 @@
 import requests, datetime, stripe, json
+from minFraud import minFraud
 from settings import SETTINGS
 
 stripe.api_key = SETTINGS['stripe']['apikey']
@@ -27,7 +28,7 @@ class Processor:
  codename="genericprocessor"
  card = {}
  required_fields = ['cc_number', 'cc_month', 'cc_year', 'cc_cvv', 'amount']
- optional_fields = {'email': '', 'fname': '', 'lname': '', 'postal': '', 'product': '', 'billingsame': True}
+ optional_fields = {'email': '', 'fname': '', 'lname': '', 'postal': '', 'product': '', 'billingsame': True, 'ip': '256.256.256.256',}
  address_fields = {'fname': 'billing_fname',
                    'lname': 'billing_lname',
                    'address': 'billing_address',
@@ -58,7 +59,7 @@ class Stripe(Processor):
  realname = "Stripe"
  codename = "stripe"
  required_fields = ['address', 'city', 'state', 'postal', 'cc_number', 'cc_month', 'cc_year', 'cc_cvv', 'amount']
- optional_fields = {'email': '', 'fname': '', 'lname': '', 'postal': '', 'product': '', 'billingsame':False}
+ optional_fields = {'email': '', 'fname': '', 'lname': '', 'postal': '', 'product': '', 'billingsame':False, 'ip': '256.256.256.256'}
  def process(self):
    Processor.process(self)
    retval = stripe.Charge.create(

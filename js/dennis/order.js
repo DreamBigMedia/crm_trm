@@ -2,6 +2,7 @@ var nextpage = "upsell.html";
 var storeid = "458";
 var pid = "12342";
 var amount = 4.95;
+var listid = "94f8e5a774c833c477c6c4f577a82ed8"; // Campaign Monitor
 
 function getValue(variable) {
     var query = window.location.search.substring(1);
@@ -45,8 +46,12 @@ function check_cookie(name) {
     return $.cookie(name);
 }
 
+var processing_card = false;
 var landingpage_id = '1';
-var c1 = checkValue('aff_id');
+var aff_id = checkValue('aff_id');
+var caCode = checkValue('caCode');
+var caid = checkValue('caid');
+var c1 = checkValue('c1');
 var c2 = checkValue('c2');
 var c3 = checkValue('c3');
 var c4 = checkValue('c4');
@@ -61,13 +66,33 @@ create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
-create_hidden_input('orderform', "affid", c1);
-create_hidden_input('orderform', "cacode", "default");
+create_hidden_input('orderform', "affid",aff_id);
+create_hidden_input('orderform', "cacode", caCode);
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
 //get_token = get_token()
 
+$(window).bind('beforeunload', function() {
+if ($.cookie('orderid') == undefined) {
+$.ajax({
+    url: 'https://'+document.domain+'/api/listme/'+listid+'/'+$.cookie('custid'),
+    type: 'GET',
+    xhrFields: {
+        withCredentials: true
+    },
+    success: function(response) { console.log(response);
+    },
+
+    error: function(error) {
+        console.log(error);
+    }
+});
+}
+});
+
 $("#orderform").on("submit", function() {
+$("input[type=image]").attr('disabled', true);
+processing_card=true;
 $.ajax({
     url: 'https://'+document.domain+'/api/orderWithCard/ucrm/'+$.cookie('custid'),
     data: $("#orderform").serialize(),
@@ -80,9 +105,10 @@ $.ajax({
 			$.cookie('cardid', response.card, { expires: 7, path: '/' });
 			$.cookie('orderid', response.order, { expires: 7, path: '/' });
                         window.location.href = nextpage;
-        }
-
-
+        } else {
+		alert(decodeURIComponent(response.cc_response).replace("+", " "));
+		$("input[type=image]").attr('disabled', false);
+	}
     },
 
     error: function(error) {

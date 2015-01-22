@@ -46,7 +46,10 @@ function check_cookie(name) {
 }
 
 var landingpage_id = '1';
-var c1 = checkValue('aff_id');
+var aff_id = checkValue('aff_id');
+var caCode = checkValue('caCode');
+var caid = checkValue('caid');
+var c1 = checkValue('c1');
 var c2 = checkValue('c2');
 var c3 = checkValue('c3');
 var c4 = checkValue('c4');
@@ -61,8 +64,8 @@ create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
-create_hidden_input('orderform', "affid", c1);
-create_hidden_input('orderform', "cacode", c1);
+create_hidden_input('orderform', "affid", aff_id);
+create_hidden_input('orderform', "cacode", caCode);
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
 //get_token = get_token()
