@@ -1,103 +1,100 @@
-function getStats(affid) {
-	$.get("http://162.218.236.81:30303/get/affid/"+affid, {}, function(data){
+$(document).ready(function(){
+	//var url = "http://"+ document.domain +":30303/sample/stats/01-01-2010/01-01-2015/me";
+	var url;
+	
+	$('.date').datepicker({
+		todayHighlight	: 	true,
+		format			:	"dd-mm-yyyy"
+	});
+	
+	$("#show_btn").click(function(){
 		
-		/*
-		*	for products chart
-		*/
-		var products_data_points = [];
-		var products_obj = data;
-		for(var obj in products_obj.products){
-			var product_ob = {label:products_obj.products[obj].name,y:products_obj.products[obj].sales};
-			products_data_points.push(product_ob);
-		}
-		var products_chart = new CanvasJS.Chart("products_chart");
-		products_chart.options.title = {text:""};
-		var products_series = {type:$("#sales_chart").val(),name:"products"};
-		products_chart.options.data = [];
-		products_chart.options.data.push(products_series);
-		products_series.dataPoints = products_data_points;
-		products_chart.render();
-
-		/*
-		*	for engage visitors chart
-		*/
-		var engage_visitors_data_points = [];
-		var ev_obj = data;
-		engage_visitors_data_points.push({label:"bought",y:ev_obj.visitors.engage.bought});
-		engage_visitors_data_points.push({label:"not bought",y:ev_obj.visitors.engage.notbought});
-		var ev_chart = new CanvasJS.Chart("engage_visitors_chart");
-		ev_chart.options.title = {text:""};
-		var ev_series = {type:$("#engage_visitors_chart_select").val(),name:"engage_visitors"};
-		ev_chart.options.data = [];
-		ev_chart.options.data.push(ev_series);
-		ev_series.dataPoints = engage_visitors_data_points;
-		ev_chart.render();
 		
-		/*
-		*	for not engage visitors chart
-		*/
-		var not_engage_visitors_data_points = [];
-		var nev_obj = data;
-		not_engage_visitors_data_points.push({label:"bought",y:nev_obj.visitors.notengage.bought});
-		not_engage_visitors_data_points.push({label:"not bought",y:nev_obj.visitors.notengage.notbought});
-		var nev_chart = new CanvasJS.Chart("not_engage_visitors_chart");
-		nev_chart.options.title = {text:""};
-		var nev_series = {type:$("#not_engage_visitors_chart_select").val(),name:"not_engage_visitors"};
-		nev_chart.options.data = [];
-		nev_chart.options.data.push(nev_series);
-		nev_series.dataPoints = not_engage_visitors_data_points;
-		nev_chart.render();
 		
-		$("#sales_chart").on("change", function(){
-			var products_chart = new CanvasJS.Chart("products_chart");
-			products_chart.options.title = {text:""};
-			var products_series = {type:this.value,name:"products"};
-			products_chart.options.data = [];
-			products_chart.options.data.push(products_series);
-			products_series.dataPoints = products_data_points;
-			products_chart.render();
+		$("#stats_table").html("<tr><th></th><th>Clicks</th><th>partials</th><th>Sales</th></tr>");
+		$("#stats_table").append("<tr id=\"spinner_row\"><td colspan=\"4\"><div class=\"spinner\"></div></td></tr>");
+		
+		
+		
+		var from 	= 	$("#date_from").val();
+		var to 		= 	$("#date_to").val();
+		
+		var year 	= to[6] + to[7] + to[8] + to[9];
+		var month 	= to[3] + to[4];
+		var day 	= to[0] + to[1];
+		
+		var date 		= new Date(new Date(year,month-1,day).getTime() + 86400000);
+		var new_date 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+		
+		
+		url = "http://"+ document.domain +":30303/sample/stats/"+ from +"/"+ new_date +"/me";
+		$.post(url, {}, function(data){
+			for(var obj in data){
+				$("#stats_table").append("<tr><td>"+ obj +"</td><td>"+ data[obj].clicks +"</td><td>"+ data[obj].partials +"</td><td>"+ data[obj].sales +"</td></tr>");
+			}
+			$("#spinner_row").remove();
 		});
 		
-		$("#engage_visitors_chart_select").on("change", function(){
-			var engage_visitors_data_points = [];
-			var ev_obj = data;
-			engage_visitors_data_points.push({label:"bought",y:ev_obj.visitors.engage.bought});
-			engage_visitors_data_points.push({label:"not bought",y:ev_obj.visitors.engage.notbought});
-			var ev_chart = new CanvasJS.Chart("engage_visitors_chart");
-			ev_chart.options.title = {text:""};
-			var ev_series = {type:this.value,name:"engage_visitors"};
-			ev_chart.options.data = [];
-			ev_chart.options.data.push(ev_series);
-			ev_series.dataPoints = engage_visitors_data_points;
-			ev_chart.render();
-		});
+	});
+	
+	
+	$("#filter_select").on("change", function(){
 		
-		$("#not_engage_visitors_chart_select").on("change", function(){
-			var not_engage_visitors_data_points = [];
-			var nev_obj = data;
-			not_engage_visitors_data_points.push({label:"bought",y:nev_obj.visitors.notengage.bought});
-			not_engage_visitors_data_points.push({label:"not bought",y:nev_obj.visitors.notengage.notbought});
-			var nev_chart = new CanvasJS.Chart("not_engage_visitors_chart");
-			nev_chart.options.title = {text:""};
-			var nev_series = {type:this.value,name:"not_engage_visitors"};
-			nev_chart.options.data = [];
-			nev_chart.options.data.push(nev_series);
-			nev_series.dataPoints = not_engage_visitors_data_points;
-			nev_chart.render();
-		});
+		$("#stats_table").html("<tr><th></th><th>Clicks</th><th>partials</th><th>Sales</th></tr>");
+		$("#stats_table").append("<tr id=\"spinner_row\"><td colspan=\"4\"><div class=\"spinner\"></div></td></tr>");
 		
-		$(".canvasjs-chart-credit").css("display","none");
-		$("select").on("change", function(){
-			$(".canvasjs-chart-credit").css("display","none");
+		
+		var option = $(this).val();
+		var from, to;
+		if(option == "today"){
+			var from_date = new Date().getTime();
+			var to_date = new Date(new Date().getTime() + 86400000);
+			
+			var date = new Date(from_date);
+			from 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+			
+			date = new Date(to_date);
+			to 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+		}else if(option == "this_week"){
+			var today = new Date();
+			var date = new Date(today.getTime() - today.getDay() * 86400000);
+			
+			from 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+			
+			var to_date = new Date(new Date().getTime() + 86400000);
+			date = new Date(to_date);
+			to 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+		}else if(option == "this_month"){
+			var today = new Date();
+			date = new Date(today.getYear() + 1900, today.getMonth(), 1);
+			from 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+			
+			var to_date = new Date(new Date().getTime() + 86400000);
+			date = new Date(to_date);
+			to 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+		}else if(option == "three_months"){
+			
+		}else if(option == "this_year"){
+			var date = new Date((new Date().getYear() + 1900), 0, 1);
+			from 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+			
+			var to_date = new Date(new Date().getTime() + 86400000);
+			date = new Date(to_date);
+			to 	= (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ((date.getMonth()+1) < 10 ? "-0" + (date.getMonth()+1) : "-" + (date.getMonth()+1)) + "-" + (date.getYear()+1900);
+		}else{}
+		
+		url = "http://"+ document.domain +":30303/sample/stats/"+ from +"/"+ to +"/me";
+		$.post(url, {}, function(data){
+			for(var obj in data){
+				$("#stats_table").append("<tr><td>"+ obj +"</td><td>"+ data[obj].clicks +"</td><td>"+ data[obj].partials +"</td><td>"+ data[obj].sales +"</td></tr>");
+			}
+			$("#spinner_row").remove();
 		});
 		
 		
 	});
-}
-
-$(document).ready(function(){
-	// http://162.218.236.81:30303/get/affid/me
-	getStats("me");
+	
+	
+	
+	
 });
-
-

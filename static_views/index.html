@@ -10,8 +10,10 @@
     <title></title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/datepicker.css" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,78 +29,41 @@
 			<div class="row">
 				<div class="col-md-2">
 					<ul class="nav nav-stacked nav-pills navigation">
-						<li class="active"><a href="">Sales</a></li>
+						<li class="active"><a href="">Stats</a></li>
 						<li><a href="">Menu Item 2</a></li>
 						<li><a href="">Menu Item 3</a></li>
 					</ul>
 				</div>
 				<div class="col-md-10">
 					<div class="page-header">
-					  <h1>Sales Dashboard</h1>
+					  <h1>Stats Dashboard</h1><hr />
 					</div>
-					<div class="row">
-						Affiliate ID: <input type="text" id="affid"><input type="button" onclick="getStats(document.getElementById('affid').value)" value="Show his stats">
-					</div>
-					<div class="col-md-4">
-					<div class="chart">
-						<div class="chart_header">
-							<h2>Sales</h2>
-						</div>
-						<div class="chart_option">
-							<select name="" id="sales_chart">
-								<option value="column">Column Chart</option>
-								<option value="pie">Pie Chart</option>
-								<option value="area">Area Chart</option>
-								<option value="bar">Bar Chart</option>
-								<option value="doughnut" selected>Doughnut Chart</option>
-								<option value="line">Line Chart</option>
+						<p>
+							Show result From &nbsp;&nbsp;
+							<input type="text" class="form-control date" id="date_from" />
+							&nbsp;&nbsp;To &nbsp;&nbsp;
+							<input type="text" class="form-control date" id="date_to" />
+							<button class="btn btn-primary" id="show_btn">Show</button> 
+						</p>
+						<p>
+							Show result for
+							<select class="form-control select" name="" id="filter_select">
+								<option value="">Select one</option>
+								<option value="today">Today</option>
+								<option value="this_week">This week</option>
+								<option value="this_month">This month</option>
+								<option value="three_months">Last three months</option>
+								<option value="this_year">This year</option>
 							</select>
-						</div>
-						<div class="chart_body">
-							<div id="products_chart" style="width:100%;height:300px;"></div>
-						</div>
-					</div>
-					</div>
-					<div class="col-md-4">
-					<div class="chart">
-						<div class="chart_header">
-							<h2>Visitors (engage)</h2>
-						</div>
-						<div class="chart_option">
-							<select name="" id="engage_visitors_chart_select">
-								<option value="column">Column Chart</option>
-								<option value="pie">Pie Chart</option>
-								<option value="area">Area Chart</option>
-								<option value="bar">Bar Chart</option>
-								<option value="doughnut" selected>Doughnut Chart</option>
-								<option value="line">Line Chart</option>
-							</select>
-						</div>
-						<div class="chart_body">
-							<div id="engage_visitors_chart" style="width:100%;height:300px;"></div>
-						</div>
-					</div>
-					</div>
-					<div class="col-md-4">
-					<div class="chart">
-						<div class="chart_header">
-							<h2>Visitors (not engage)</h2>
-						</div>
-						<div class="chart_option">
-							<select name="" id="not_engage_visitors_chart_select">
-								<option value="column">Column Chart</option>
-								<option value="pie">Pie Chart</option>
-								<option value="area">Area Chart</option>
-								<option value="bar">Bar Chart</option>
-								<option value="doughnut" selected>Doughnut Chart</option>
-								<option value="line">Line Chart</option>
-							</select>
-						</div>
-						<div class="chart_body">
-							<div id="not_engage_visitors_chart" style="width:100%;height:300px;"></div>
-						</div>
-					</div>
-					</div>
+						</p>
+						<table class="table table-bordered table-hover" id="stats_table">
+							<tr>
+								<th></th>
+								<th>Clicks</th>
+								<th>partials</th>
+								<th>Sales</th>
+							</tr>
+						</table>	
 				</div>
 			</div>
 		</div>
@@ -110,7 +75,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/canvasjs.min.js" ></script>
+    <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/script.js"></script>
   </body>
 </html>

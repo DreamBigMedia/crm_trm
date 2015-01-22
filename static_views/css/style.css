@@ -6,41 +6,43 @@
 .navigation{
 	margin-top:45px;
 }
-.chart{
-	width:80%;
-	margin:0 auto;
-	box-shadow:0px 0px 12px 7px #e1e1e1;
-	padding-top:10px;
-	padding-bottom:15px;
-	margin-bottom:20px;
+.date{
+	display:inline-block;
+	width:inherit;
 }
-.chart_header{
-	width:100%;
-	border-bottom:1px solid #1D9A9A;
-	margin-bottom:10px;
+
+
+/*
+* spinner
+*/
+.spinner {
+  width: 30px;
+  height: 30px;
+  background-color: #333;
+
+  margin: 100px auto;
+  -webkit-animation: rotateplane 1.2s infinite ease-in-out;
+  animation: rotateplane 1.2s infinite ease-in-out;
 }
-.chart_header h2{
-	margin-left:20px;
-	color:#1D9A9A;
+
+@-webkit-keyframes rotateplane {
+  0% { -webkit-transform: perspective(120px) }
+  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
 }
-.chart_option select{
-	width: 90%;
-	border: 2px solid #E1E1E1;
-	height: 35px;
-	margin:0 auto;
-	display:block;
-	margin-bottom:20px;
+
+@keyframes rotateplane {
+  0% { 
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
+  } 50% { 
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
+  } 100% { 
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+  }
 }
-.chart_option select:hover{
-	border: 2px solid #68B4D6;
-}
-.chart_option select:focus{
-	border: 2px solid #68B4D6;
-}
-.chart_body{
-	width:90%;
-	display:block;
-	margin:0 auto;
-}
+
 
 
