@@ -4,6 +4,7 @@ from tMail import tMail
 from nmi_utils import nmiSelect
 from createsend import Subscriber
 from hashtag import ShipOrder
+from urllib import unquote_plus
 import processing, models, json, datetime, os.path, logging
 
 app = Flask(__name__)
@@ -172,7 +173,7 @@ def apiOrderWithCard(processor, customerid):
                                  'c2': request.form.get('c2'),
                                  'c3': request.form.get('c3'),
                                  'ip': remoteaddr,
-                                 'orderpage': request.form['orderpage']}).process()
+                                 'orderpage': os.path.dirname(unquote_plus(request.form['orderpage']))}).process()
     elif processor == "stripe":
         try:
             prod = models.Product.objects(id= request.form['pid'])[0]
@@ -284,7 +285,7 @@ def apiOrderWithCard(processor, customerid):
     oldguy['card'] = str(newcard.id)
     oldguy['order_time'] = datetime.datetime.now()
     oldguy.save()
-    return jsonify({"card": str(newcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id)), "visitor": visid})
+    return jsonify({"card": str(newcard.id), "cc_response": process.errorMessage, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id)), "visitor": visid})
 
 @app.route("/api/order/<processor>/<customerid>/<cardid>", methods=["POST"])
 def apiOrderNoCard(processor, customerid, cardid):
