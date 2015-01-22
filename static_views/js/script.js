@@ -28,7 +28,7 @@ $(document).ready(function(){
 		
 		
 		url = "http://"+ document.domain +":30303/sample/stats/"+ from +"/"+ new_date +"/me";
-		$.post(url, {}, function(data){
+		$.get(url, {}, function(data){
 			for(var obj in data){
 				$("#stats_table").append("<tr><td>"+ obj +"</td><td>"+ data[obj].clicks +"</td><td>"+ data[obj].partials +"</td><td>"+ data[obj].sales +"</td></tr>");
 			}
@@ -84,7 +84,7 @@ $(document).ready(function(){
 		}else{}
 		
 		url = "http://"+ document.domain +":30303/sample/stats/"+ from +"/"+ to +"/me";
-		$.post(url, {}, function(data){
+		$.get(url, {}, function(data){
 			for(var obj in data){
 				$("#stats_table").append("<tr><td>"+ obj +"</td><td>"+ data[obj].clicks +"</td><td>"+ data[obj].partials +"</td><td>"+ data[obj].sales +"</td></tr>");
 			}
