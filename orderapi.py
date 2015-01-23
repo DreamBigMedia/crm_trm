@@ -423,10 +423,10 @@ def apiOrderNoCard(processor, customerid, cardid):
       else:
         p=[{'sku':prod['skus'], 'qty':prod_q}]
       ShipOrder(str(neworder.id), oldguy['fname']+" "+oldguy['lname'], oldguy['ship_address1'], oldguy['ship_address2'], oldguy['ship_city'], oldguy['ship_state'], oldguy['ship_zipcode'], "US", p)
-      oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr)[0]
-      oldvisitor['upsell'] = True
-      oldvisitor['upsell_convert'] = request.form['pid']
-      oldvisitor.save()
+    oldvisitor = models.Visitor.objects(uniqid=request.form['uniqid'], remoteaddr=remoteaddr)[0]
+    oldvisitor['upsell'] = True
+    oldvisitor['upsell_convert'] = request.form['pid']
+    oldvisitor.save()
     return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
 
 if __name__=="__main__":
