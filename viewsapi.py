@@ -20,7 +20,7 @@ def sample():
 def samplestats(start, end, affid):
 	d1=datetime.datetime.strptime(start, '%m-%d-%Y')
 	d2=datetime.datetime.strptime(end, '%m-%d-%Y')
-	return jsonify({"": {}, "id_1/id_2/id_3": {"clicks": 14, "partials": 2, "sales": 1}, "strausburg//None": {"clicks": 209, "partials": 93, "sales": 66}, "hamilton//strange": {"clicks": 209, "partials": 93, "sales": 66}})
+	return jsonify({"": {}, "id_1/id_2/id_3": {"clicks": 14, "partials": 2, "sales": 1, "upsales": 0}, "strausburg//None": {"clicks": 209, "partials": 93, "sales": 66, "upsales": 33}, "hamilton//strange": {"clicks": 209, "partials": 93, "sales": 66, "upsales": 33}})
 
 @app.route('/stats/<path:filename>')
 def send_foo(filename):
