@@ -2,7 +2,7 @@ import models, time, datetime, processing
 from nmi_utils import nmiSelect, nmiCancel
 from hashtag import ShipOrder
 
-for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
+for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False, canceled=False):
 	oldcard = models.Creditcard.objects(id=x['card'])[0]
 	oldguy = models.Customer.objects(id=x['customer'])[0]
 	n = nmiSelect(x['pid'], x['nmi_id']) # get product and assign merchant account
@@ -65,7 +65,7 @@ for x in models.Rebill.objects(date=time.strftime("%d/%m/%Y"), batched=False):
 			sm.send(email) # shoot it off
 	x['batched'] = True
 	x.save() # mark rebill as ran
-	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"), retrynum=theretrynum)
+	x = models.Rebill(card=str(oldcard.id), customer=str(oldguy.id), pid=x['pid'], date=future.strftime("%d/%m/%Y"), retrynum=theretrynum, nmi_id=x['nmi_id'])
 	x.save() # rebill them again
 	neworder = models.Order(creditcard=str(oldcard.id), products=x['pid'], tracking="rebill", order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response, nmi_id=x['nmi_id'])
 	neworder.save() # record that transaction

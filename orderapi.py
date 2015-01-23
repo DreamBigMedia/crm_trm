@@ -19,6 +19,7 @@ app.logger.addHandler(handler)
 
 @app.route('/track/')
 def track():
+ affid = request.args.get('affid')
  c1 = request.args.get('c1')
  c2 = request.args.get('c2')
  c3 = request.args.get('c3')
@@ -38,10 +39,10 @@ def track():
   if type(visitor['pagehits']) == type(None):
    visitor['pagehits'] = 0
   if type(visitor['affid']) == type(None):
-   visitor['affid'] = c1
+   visitor['affid'] = affid
   visitor['pagehits'] += 1
  else:
-  visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr, pagehits=1, visit_date=datetime.datetime.now(), affid=c1, upsell=False)
+  visitor = models.Visitor(c1=c1, c2=c2, c3=c3, c4=c4, c5=c5, trafficsource=trafficsource, conversion=False, engage=False, lead=False, useragent=useragent, convert='', lander=l1, uniqid=vid, referer=request.headers.get('Referer'), remoteaddr=remoteaddr, pagehits=1, visit_date=datetime.datetime.now(), affid=affid, upsell=False)
  visitor.save()
  vi = str(visitor.id)
  return vi
@@ -140,7 +141,7 @@ def apiOrderWithCard(processor, customerid):
         rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
     print "MaxMind riskScore: "+str(rscore)
     if rscore >= 5.55:
-     return jsonify({"success": False, "cc_response": "High fraud risk"})
+     return jsonify({"success": False, "cc_response": "High fraud risk: "+str(rscore)+"%"})
     if processor == "ucrm":
         if billingsame:
           bsame = 'yes'
@@ -267,7 +268,7 @@ def apiOrderWithCard(processor, customerid):
             for x in macros.keys():
                 email = email.replace("{"+x+"}", macros[x])
         sm.send(email)
-    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), success=process.success, server_response=process.str_response)
+    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), tx_id=process.orderid, success=process.success, server_response=process.str_response, nmi_id=str(nmiaccount['id']))
     neworder.save()
     visid = "didnt convert"
     if process.success:

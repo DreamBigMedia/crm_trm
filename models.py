@@ -67,6 +67,9 @@ class Order(Document):
  server_response = StringField(default="")
  email_buy = StringField()
  affid = StringField()
+ refunded = BooleanField(default=False)
+ nmi_id = StringField()
+ tx_id = StringField()
 
 class Email(Document):
  optin_time = DateTimeField(datetime)
@@ -120,6 +123,7 @@ class Rebill(Document):
  affid = StringField()
  retrynum = IntField(default=0)
  nmi_id = StringField()
+ canceled = BooleanField(default=False)
 
 class Smtpserver(Document):
  storeid = StringField(default="")

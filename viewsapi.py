@@ -247,7 +247,29 @@ def getByAffid(affid):
                        'type': 'trial'}
   orders[x['products']]['sales'] += 1
  return jsonify({'products': orders, 'visitors': visitors})
- 
+
+@app.route("/refund", methods=['GET', 'POST'])
+def refund():
+ if request.method == "POST":
+  order = models.Order.objects(id=request.form['order_id'])[0]
+  nmi = models.NMIAccount.objects(id=order['nmi_id'])[0]
+  pdata = {'type': 'refund',
+              'username': nmi['username'],
+              'password': nmi['password'],
+              'transactionid': order['tx_id']}
+  return requests.post(nmi['gateway'], pdata).text
+ return '<html><body><form method="POST">order id: <input type="text" name="order_id"><input type="submit" value="refund"></form></body></html>'
+
+@app.route("/refund/<order_id>")
+def refundOrder(order_id):
+ order = models.Order.objects(id=order_id)[0]
+ nmi = models.NMIAccount.objects(id=order['nmi_id'])[0]
+ pdata = {'type': 'refund',
+             'username': nmi['username'],
+             'password': nmi['password'],
+             'transactionid': order['tx_id']}
+ return requests.post(nmi['gateway'], pdata).text
+
 
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=30303, debug=True)
