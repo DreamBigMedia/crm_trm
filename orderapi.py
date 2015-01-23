@@ -134,7 +134,10 @@ def apiOrderWithCard(processor, customerid):
         newcard.billing_country = 'us'
     newcard.save()
     print str(newcard.id)
-    rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
+    if newcard.card_number == '4111111111111111':
+        rscore = 0
+    else:
+        rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
     print "MaxMind riskScore: "+str(rscore)
     if rscore >= 5.55:
      return jsonify({"success": False, "cc_response": "High fraud risk"})
