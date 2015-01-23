@@ -173,7 +173,8 @@ class NMI(Processor):
       continue
      k,v = x.split('=', 1)
      retvaljson[k] = v
-    return cashResponse(retvaljson['response_code']=='100', retvaljson['orderid'], retvaljson['responsetext'], retvaljson, retval, self.card['amount'], self.codename)
+    return cashResponse(retvaljson['response_code']=='100', retvaljson['transactionid'], retvaljson['responsetext'], retvaljson, retval, self.card['amount'], self.codename)
+    
 
 if __name__=="__main__": #if we arent an import, run some tests
   #print ">> Stripe()"
