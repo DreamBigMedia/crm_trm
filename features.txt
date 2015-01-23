@@ -1,0 +1,29 @@
+*campaign monitor
+	Decline Salvage
+	Auto Responder Integration
+
+*maxmind
+	Fraud Protection
+
+*hand coded
+	Payment Gateway Integration
+	Multiple Billing Options (stripe, nmi, dennis)
+	Campaign Management
+	Fulfillment Integration
+	Affiliate Tracking Support
+	Gateway Load Balancing
+	Multiple Billing Options (trial/straight)
+	
+*waitin on indians to make it sexy
+	Order Management
+	Reporting & Analytics
+
+*in progress
+	Call Center Integration
+	Cascade Declines (partially supported, not up to my god-like standards)
+
+*theirs is crap anyways,
+	E-Commerce Tools (generates fucked up html. we use simple js includes)
+
+*we probably wont support this
+	Hundreds of 3rd Party Plugins (because other peoples code sucks)
