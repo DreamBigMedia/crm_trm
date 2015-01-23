@@ -1,6 +1,7 @@
-var nextpage = "confirm.html";
-var storeid = "549e245309d02402762df3a9";
-var pid = "549e2b2f09d024031841af29";
+var nextpage = "order.html";
+var storeid = "458";
+var pid = "12342";
+var amount = 4.95;
 
 function getValue(variable) {
     var query = window.location.search.substring(1);
@@ -14,12 +15,25 @@ function getValue(variable) {
     return "";
 }
 
+function checkValue(variable) {
+    if ($.cookie(variable) == undefined) {
+        $.cookie(variable, getValue(variable), {
+           expires: 7,
+            path: '/'
+        });
+    }
+    return $.cookie(variable);
+}
+
 function create_hidden_input(form_id, name, value) {
+
     form_id = "#" + form_id;
     form_ob = $(form_id);
+	form_ob.ready(function(){
 
 
     $("<input name='" + name + "' id='" + name + "' type='hidden' value='" + value + "'/>").appendTo(form_ob);
+	});
 }
 
 
@@ -34,7 +48,11 @@ function check_cookie(name) {
     return $.cookie(name);
 }
 
+$('document').ready(function() {
 var landingpage_id = '1';
+var aff_id = checkValue('aff_id');
+var caCode = checkValue('caCode');
+var caid = checkValue('caid');
 var aff_id = checkValue('aff_id');
 var c1 = checkValue('c1');
 var c2 = checkValue('c2');
@@ -44,33 +62,28 @@ var c5 = checkValue('c5');
 var t1 = checkValue('t1');
 var uniqid = check_cookie('uniqid');
 
-$('document').ready(function() {
+create_hidden_input('orderform', "storeid", storeid);
 create_hidden_input('orderform', "pid", pid);
+create_hidden_input('orderform', "amount", amount);
 create_hidden_input('orderform', "aff_id", aff_id);
 create_hidden_input('orderform', "c1", c1);
 create_hidden_input('orderform', "c2", c2);
 create_hidden_input('orderform', "c3", c3);
+create_hidden_input('orderform', "affid", aff_id);
 create_hidden_input('orderform', "uniqid", uniqid);
 create_hidden_input('orderform', "orderpage", window.location.href);
-create_hidden_input('orderform', "quantity", 1);
-//get_token = get_token()
 
-$("#nothanksbutton").on("click", function() {
-$.cookie('upsell', false, { expires: 7, path: '/' });
-window.location.href = nextpage;
-});
-
-
-$("#orderform").on("submit", function() {$.ajax({
-    url: 'https://'+document.domain+'/api/order/'+storeid+'/'+$.cookie('custid')+'/'+$.cookie('cardid'),
+$("#orderform").on("submit", function() {
+$.ajax({
+    url: 'https://'+document.domain+'/api/customer',
     data: $("#orderform").serialize(),
     type: 'POST',
     xhrFields: {
         withCredentials: true
     },
     success: function(response) {
-        if (response.success) {
-			$.cookie('upsell', true, { expires: 7, path: '/' });
+        if (response) {
+			$.cookie('custid', response, { expires: 7, path: '/' });
                         window.location.href = nextpage;
         }
 
