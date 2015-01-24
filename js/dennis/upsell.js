@@ -3,7 +3,9 @@ var storeid = "458";
 var pid = "12343";
 var amount = 4.95;
 
-$('#orderform').on("load", function() {
+function create_hidden_input(form_id,name,value){form_id="#"+form_id;form_ob=$(form_id);$("<input name='"+name+"' id='"+name+"' type='hidden' value='"+value+"'/>").appendTo(form_ob)}
+
+$('document').ready(function() {
 create_hidden_input('orderform', "storeid", storeid);
 create_hidden_input('orderform', "pid", pid);
 create_hidden_input('orderform', "amount", amount);
@@ -17,14 +19,14 @@ create_hidden_input('orderform', "orderpage", window.location.href);
 //get_token = get_token()
 });
 
-$('document').ready(function() {
 $("#nothanksbutton").on("click", function() {
 $.cookie('upsell', false, { expires: 7, path: '/' });
 window.location.href = nextpage;
 });
 
 
-$("#orderform").on("submit", function() {$.ajax({
+$("#orderform").on("submit", function() {
+$.ajax({
     url: 'https://'+document.domain+'/api/order/ucrm/'+$.cookie('custid')+'/'+$.cookie('cardid'),
     data: $("#orderform").serialize(),
     type: 'POST',
@@ -45,5 +47,4 @@ $("#orderform").on("submit", function() {$.ajax({
     }
 });
 return false;
-});
 });
