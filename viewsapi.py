@@ -1,6 +1,6 @@
 from flask import request, jsonify, Flask, render_template, redirect, send_from_directory
 from urlparse import parse_qs
-import processing, models, json, datetime, hashlib, logging
+import processing, models, json, datetime, hashlib, logging, requests
 
 app = Flask(__name__)
 
@@ -248,7 +248,7 @@ def getByAffid(affid):
   orders[x['products']]['sales'] += 1
  return jsonify({'products': orders, 'visitors': visitors})
 
-@app.route("/refund", methods=['GET', 'POST'])
+#@app.route("/refund", methods=['GET', 'POST'])
 def refund():
  if request.method == "POST":
   order = models.Order.objects(id=request.form['order_id'])[0]
@@ -268,7 +268,7 @@ def refundOrder(order_id):
              'username': nmi['username'],
              'password': nmi['password'],
              'transactionid': order['tx_id']}
- return requests.post(nmi['gateway'], pdata).text
+ return requests.post(nmi['url'], pdata).text
 
 
 if __name__=="__main__":
