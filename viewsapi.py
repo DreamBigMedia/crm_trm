@@ -263,12 +263,17 @@ def refund():
 @app.route("/refund/<order_id>")
 def refundOrder(order_id):
  order = models.Order.objects(id=order_id)[0]
+ if order['refunded'] == True:
+  return "This order has already been refunded."
  nmi = models.NMIAccount.objects(id=order['nmi_id'])[0]
  pdata = {'type': 'refund',
              'username': nmi['username'],
              'password': nmi['password'],
              'transactionid': order['tx_id']}
- return requests.post(nmi['url'], pdata).text
+ retval = requests.post(nmi['url'], pdata).text
+ order['refunded'] = True
+ order.save()
+ return retval
 
 
 if __name__=="__main__":

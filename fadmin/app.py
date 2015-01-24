@@ -17,27 +17,30 @@ db = MongoEngine()
 db.init_app(app)
 
 class OrderView(ModelView):
+	column_list = ('id', 'order_number', 'products', 'tracking', 'order_date', 'success', 'affid', 'refunded', 'tx_id')
 	column_filters = ['affid', 'creditcard', 'success']
 	column_searchable_list = ('affid', 'creditcard', 'products')
 #	form_ajax_refs = { 'creditcard': {'fields': ('affid', 'success') } }
 
 class CustomerView(ModelView):
+	column_list = ('fname', 'lname', 'email', 'ship_address1', 'ship_address2', 'ship_city', 'ship_state', 'ship_phone', 'ship_zipcode')
 	column_filters = ['fname', 'lname', 'card', 'ship_zipcode', 'order_time', 'email']
 	column_searchable_list = ('fname', 'lname', 'card', 'ship_zipcode')
 
-class NMIAccountView(ModelView):
-	column_filters = ['url']
-	column_searchable_list = ('prod_id', 'username', 'name')
+#class NMIAccountView(ModelView):
+#	column_filters = ['url']
+#	column_searchable_list = ('prod_id', 'username', 'name')
 
 class RebillView(ModelView):
+	column_list = ('customer', 'pid', 'date', 'batched', 'affid', 'retrynum')
 	column_filters = ['pid', 'batched', 'affid', 'retrynum', 'nmi_id']
 	column_searchable_list = ('pid', 'card', 'customer')
 
-class AffiliateView(ModelView):
-	column_searchable_list = ('username', 'affid', 'displayname')
+#class AffiliateView(ModelView):
+#	column_searchable_list = ('username', 'affid', 'displayname')
 
-class SmtpserverView(ModelView):
-	column_filters = ['storeid', 'host', 'port', 'username', 'password', 'theme']
+#class SmtpserverView(ModelView):
+#	column_filters = ['storeid', 'host', 'port', 'username', 'password', 'theme']
 
 @app.route('/refund/')
 def refund():
@@ -52,9 +55,9 @@ if __name__=='__main__':
 
 	admin.add_view(OrderView(models.Order))
 	admin.add_view(CustomerView(models.Customer))
-	admin.add_view(NMIAccountView(models.NMIAccount))
+#	admin.add_view(NMIAccountView(models.NMIAccount))
 	admin.add_view(RebillView(models.Rebill))
-	admin.add_view(AffiliateView(models.Affiliate))
-	admin.add_view(SmtpserverView(models.Smtpserver))
+#	admin.add_view(AffiliateView(models.Affiliate))
+#	admin.add_view(SmtpserverView(models.Smtpserver))
 
 	app.run(debug=True, port=4200, host='0.0.0.0')
