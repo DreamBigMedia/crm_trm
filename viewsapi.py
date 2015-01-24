@@ -264,7 +264,7 @@ def refund():
 def refundOrder(order_id):
  order = models.Order.objects(id=order_id)[0]
  if order['refunded'] == True:
-  return "This order has already been refunded."
+  return "<html><body>This order has already been refunded. <a onclick='window.history.back()'>Go back</a></body></html>"
  nmi = models.NMIAccount.objects(id=order['nmi_id'])[0]
  pdata = {'type': 'refund',
              'username': nmi['username'],
@@ -273,7 +273,7 @@ def refundOrder(order_id):
  retval = requests.post(nmi['url'], pdata).text
  order['refunded'] = True
  order.save()
- return retval
+ return "<html><body>"+retval+"<br><a onclick='window.history.back()'>Go back</a></body></html>"
 
 
 if __name__=="__main__":

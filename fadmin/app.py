@@ -23,7 +23,7 @@ class OrderView(ModelView):
 #	form_ajax_refs = { 'creditcard': {'fields': ('affid', 'success') } }
 
 class CustomerView(ModelView):
-	column_list = ('fname', 'lname', 'email', 'ship_address1', 'ship_address2', 'ship_city', 'ship_state', 'ship_phone', 'ship_zipcode')
+	column_list = ('card', 'fname', 'lname', 'email', 'ship_address1', 'ship_address2', 'ship_city', 'ship_state', 'ship_phone', 'ship_zipcode')
 	column_filters = ['fname', 'lname', 'card', 'ship_zipcode', 'order_time', 'email']
 	column_searchable_list = ('fname', 'lname', 'card', 'ship_zipcode')
 

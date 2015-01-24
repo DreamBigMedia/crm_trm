@@ -140,7 +140,7 @@ def apiOrderWithCard(processor, customerid):
     else:
         rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
     print "MaxMind riskScore: "+str(rscore)
-    if rscore >= 5.55:
+    if rscore >= 25.55:
      return jsonify({"success": False, "cc_response": "High fraud risk: "+str(rscore)+"%"})
     if processor == "ucrm":
         if billingsame:
@@ -268,7 +268,7 @@ def apiOrderWithCard(processor, customerid):
             for x in macros.keys():
                 email = email.replace("{"+x+"}", macros[x])
         sm.send(email)
-    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), tx_id=process.orderid, success=process.success, server_response=process.str_response, nmi_id=str(nmiaccount['id']))
+    neworder = models.Order(creditcard=str(newcard.id), products=request.form['pid'], tracking=request.form['uniqid'], affid=request.form.get('affid'), order_date=datetime.datetime.now(), tx_id=process.orderid, success=process.success, server_response=process.str_response, nmi_id=(str(nmiaccount['id']) if process.mytype=="nmi" else ""))
     neworder.save()
     visid = "didnt convert"
     if process.success:
