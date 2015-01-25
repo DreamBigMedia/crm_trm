@@ -20,6 +20,7 @@ class OrderView(ModelView):
 	column_list = ('id', 'order_number', 'products', 'tracking', 'order_date', 'success', 'affid', 'refunded', 'tx_id')
 	column_filters = ['affid', 'creditcard', 'success']
 	column_searchable_list = ('affid', 'creditcard', 'products')
+	edit_template = 'edit.html'
 #	form_ajax_refs = { 'creditcard': {'fields': ('affid', 'success') } }
 
 class CustomerView(ModelView):
