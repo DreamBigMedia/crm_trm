@@ -1,3 +1,5 @@
+var storeid = "458";
+
 function getValue(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
@@ -18,14 +20,6 @@ function checkValue(variable) {
         });
     }
     return $.cookie(variable);
-}
-
-function create_hidden_input(form_id, name, value) {
-    form_id = "#" + form_id;
-    form_ob = $(form_id);
-
-
-    $("<input name='" + name + "' id='" + name + "' type='hidden' value='" + value + "'/>").appendTo(form_ob);
 }
 
 
