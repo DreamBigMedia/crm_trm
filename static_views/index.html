@@ -27,28 +27,32 @@
 	<!-- <div class="wrapper"> -->
 		<div class="container wrapper">
 			<div class="row">
-				<div class="col-md-2">
+				<div class="col-md-3">
 					<ul class="nav nav-stacked nav-pills navigation">
 						<li class="active"><a href="">Stats</a></li>
 						<li><a href="">Menu Item 2</a></li>
 						<li><a href="">Menu Item 3</a></li>
 					</ul>
 				</div>
-				<div class="col-md-10">
+				<div class="col-md-9">
 					<div class="page-header">
 					  <h1>Stats Dashboard</h1><hr />
 					</div>
+						
 						<p>
-							Show result From &nbsp;&nbsp;
+							<strong><i>Show result for</i> </strong> <input class="form-control" type="text" id="username" value="me" />
+						</p>
+						<p>
+							<strong>Show result from</strong> &nbsp;&nbsp;
 							<input type="text" class="form-control date" id="date_from" />
-							&nbsp;&nbsp;To &nbsp;&nbsp;
+							&nbsp;&nbsp;<strong>To</strong> &nbsp;&nbsp;
 							<input type="text" class="form-control date" id="date_to" />
 							<button class="btn btn-primary" id="show_btn">Show</button> 
 						</p>
 						<p>
-							Show result for
+							<strong>Show result for</strong>
 							<select class="form-control select" name="" id="filter_select">
-								<option value="">Select one</option>
+								<option value="none">Select one</option>
 								<option value="today">Today</option>
 								<option value="this_week">This week</option>
 								<option value="this_month">This month</option>
@@ -56,12 +60,16 @@
 								<option value="this_year">This year</option>
 							</select>
 						</p>
+						
+						<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+						
 						<table class="table table-bordered table-hover" id="stats_table">
 							<tr>
 								<th></th>
 								<th>Clicks</th>
 								<th>partials</th>
 								<th>Sales</th>
+								<th>Upsales</th>
 							</tr>
 						</table>	
 				</div>
@@ -76,6 +84,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/canvasjs.min.js"></script>
     <script src="js/script.js"></script>
   </body>
 </html>

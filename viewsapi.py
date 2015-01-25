@@ -133,6 +133,10 @@ def removeRow(collection, thatid):
 
 @app.route("/stats/daterange/<start>/<end>/<affid>")
 def stateDaterange(start, end, affid):
+ if loggedIn() == False:
+  return redirect('/login')
+ if affid == "me":
+  affid = loggedIn()['affid']
  d1=datetime.datetime.strptime(start, '%m-%d-%Y')
  d2=datetime.datetime.strptime(end, '%m-%d-%Y')
  print str(d1)+"\t"+str(d2)
