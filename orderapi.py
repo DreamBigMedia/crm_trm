@@ -5,6 +5,7 @@ from nmi_utils import nmiSelect
 from createsend import Subscriber
 from hashtag import ShipOrder
 from urllib import unquote_plus
+from random import randint
 import processing, models, json, datetime, os.path, logging
 
 app = Flask(__name__)
@@ -16,6 +17,50 @@ logger.addHandler(handler)
 # Also add the handler to Flask's logger for cases
 #  where Werkzeug isn't used as the underlying WSGI server.
 app.logger.addHandler(handler)
+
+@app.route("/lead")
+def getLead():
+ d=False
+ difficulty = 0
+ while not d:
+  try:
+   n = models.Customer.objects()
+   print str(n.count())
+   x = n.skip(randint(0,n.count())).next()
+   print str(x.id)+"\t"+repr(x.visitor_id)
+   #x = n.next() # choose one at random conversion=False,callcenter__ne=True
+   try:
+    c = models.Creditcard.objects(cust_id=str(x.id)).next()
+    print "cc: "+str(c.id)
+    difficulty+=1
+   except:
+    d=True
+  except:
+   pass
+ n = x
+ return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width"><title>My email message created with BeeFree</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta http-equiv="X-UA-Compatible" content="IE=edge">  <meta name="format-detection" content="telephone=no">  <style type="text/css">  /* RESET */  #outlook a {padding:0;} body {width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; mso-line-height-rule:exactly;}  table td { border-collapse: collapse; }  .ExternalClass {width:100%;}  .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}  table td {border-collapse: collapse;}  /* IMG */  img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}  a img {border:none;}  /* Becoming responsive */  @media only screen and (max-device-width: 480px) {  table[id="container_div"] {max-width: 480px !important;}  table[id="container_table"], table[class="image_container"], table[class="image-group-contenitor"] {width: 100% !important; min-width: 320px !important;}  table[class="image-group-contenitor"] td, table[class="mixed"] td, td[class="mix_image"], td[class="mix_text"], td[class="table-separator"], td[class="section_block"] {display: block !important;width:100% !important;}  table[class="image_container"] img, td[class="mix_image"] img, table[class="image-group-contenitor"] img {width: 100% !important;}  table[class="image_container"] img[class="natural-width"], td[class="mix_image"] img[class="natural-width"], table[class="image-group-contenitor"] img[class="natural-width"] {width: auto !important;}  a[class="button-link justify"] {display: block !important;width:auto !important;}  td[class="table-separator"] br {display: none;}  td[class="cloned_td"]  table[class="image_container"] {width: 100% !important; min-width: 0 !important;} } table[class="social_wrapp"] {width: auto;} </style></head><body bgcolor="#eeeeee"><table id="container_div" style="text-align:center; background-color:#eeeeee; border-collapse: collapse" align="center" bgcolor="#eeeeee" width="100%" cellpadding="0" cellspacing="0" border="0">  <tr><td align="center"><br><table id="container_wrapper" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td><table id="container_table" style="border-collapse: collapse; min-width: 600px;" bgcolor="#ffffff" width="600" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td bgcolor="#ffffff" valign="top"><table style="border-collapse: collapse; background-color: rgb(255, 255, 255);" bgcolor="#ffffff" width="100%" border="0" cellpadding="10" cellspacing="0"><tbody><tr valign="top"><td style="line-height: 130%; color: rgb(0, 0, 0);" valign="top"><p style="color: rgb(0, 0, 0); display: block; margin: 16px 0px; font-family: serif; text-align: left; background-color: transparent; background-image: none; background-position: 0% 0%; background-repeat: repeat; border-color: rgb(0, 0, 0); border-width: 0px; border-style: none; border-radius: 0px; outline: 0px none; padding: 0px; vertical-align: baseline; word-wrap: normal; font-size: 16px; text-decoration: none;"><span style="font-size: 24px; font-weight: bold; font-family: Arial,Helvetica,sans-serif; color: rgb(102, 102, 102); line-height: 130%;">Name: '+str(n.fname)+' '+str(n.lname)+'</span><br><span style="font-size: 18px; font-family: Arial,Helvetica,sans-serif; color: rgb(102, 102, 102); line-height: 130%;">'+str(n.email)+'</span><br><span style="font-size: 18px; font-family: Arial,Helvetica,sans-serif; color: rgb(102, 102, 102); line-height: 130%;">'+str(n.ship_phone)+'</span><br><br><span style="font-size: 14px; font-family: Arial,Helvetica,sans-serif; color: rgb(102, 102, 102); line-height: 130%;">'+str(n.ship_address1)+'<br>'+str(n.ship_address2)+'<br>'+str(n.ship_city)+', '+str(n.ship_state)+' '+str(n.ship_zipcode)+'</span><br></p></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><br></td></tr></table></body><!-- DIFFICULTY: '+str(difficulty)+' --></html>'
+
+@app.route("/lead.json")
+def getLeadJson():
+ d=False
+ difficulty = 0
+ while not d:
+  try:
+   n = models.Customer.objects()
+   print str(n.count())
+   x = n.skip(randint(0,n.count())).next()
+   print str(x.id)+"\t"+repr(x.visitor_id)
+   #x = n.next() # choose one at random conversion=False,callcenter__ne=True
+   try:
+    c = models.Creditcard.objects(cust_id=str(x.id)).next()
+    print "cc: "+str(c.id)
+    difficulty+=1
+   except:
+    d=True
+  except:
+   pass
+ n = x
+ return json.dumps({'fname':str(n.fname),'lname':str(n.lname),'email':str(n.email),'phone':str(n.ship_phone),'address1':str(n.ship_address1),'address2':str(n.ship_address2),'city':str(n.ship_city),'state':str(n.ship_state),'zipcode':str(n.ship_zipcode),'search_difficulty':str(difficulty)})
 
 @app.route('/track/')
 def track():
@@ -139,6 +184,7 @@ def apiOrderWithCard(processor, customerid):
         rscore = 0
     else:
         rscore = float(minFraud(remoteaddr, newcard.billing_city, newcard.billing_state, newcard.billing_zipcode, 'US', oldguy.ship_city, oldguy.ship_state, oldguy.ship_zipcode, 'US', oldguy.email, oldguy.ship_phone, newcard.card_number, request.headers.get('User-Agent'), request.headers.get('Accept-Language'), request.form['storeid'])['riskScore'])
+    rscore = 0.0
     print "MaxMind riskScore: "+str(rscore)
     if rscore >= 25.55:
      return jsonify({"success": False, "cc_response": "High fraud risk: "+str(rscore)+"%"})
@@ -172,6 +218,7 @@ def apiOrderWithCard(processor, customerid):
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
                                  'cacode': request.form['cacode'],
+                                 'caid': request.form['caid'],
                                  'affid': request.form['affid'],
                                  'c1': request.form.get('c1'),
                                  'c2': request.form.get('c2'),
@@ -332,6 +379,7 @@ def apiOrderNoCard(processor, customerid, cardid):
                                  'email': oldguy['email'],
                                  'phone': oldguy['ship_phone'],
                                  'cacode': request.form['cacode'],
+                                 'caid': request.form['caid'],
                                  'affid': request.form['affid'],
                                  'c1': request.form.get('c1'),
                                  'c2': request.form.get('c2'),
@@ -428,7 +476,7 @@ def apiOrderNoCard(processor, customerid, cardid):
     oldvisitor['upsell'] = True
     oldvisitor['upsell_convert'] = request.form['pid']
     oldvisitor.save()
-    return jsonify({"card": str(oldcard.id), "cc_response": process.raw_response, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
+    return jsonify({"card": str(oldcard.id), "cc_response": process.errorMessage, "success": process.success, "order": (process.orderid if processor == "ucrm" else str(neworder.id))})
 
 if __name__=="__main__":
   app.run(host="0.0.0.0", port=55555, debug=True)
