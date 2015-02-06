@@ -100,6 +100,7 @@ class Visitor(Document):
  pagehits = IntField()
  affid = StringField()
  uniqid = StringField()
+ callcenter = BooleanField(default=False)
 
 class NMIAccount(Document):
  name = StringField()

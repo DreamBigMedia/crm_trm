@@ -65,7 +65,7 @@ def loginPage():
  li = loggedIn()
  if li != False:
   if li['loggedin'] == True:
-   return redirect("/trm/product/$natural/0/50")
+   return redirect("/stats/index.html")
  if request.method=="POST":
   x = logIn(request.form['username'], request.form['passwd'])
   if x != False: 

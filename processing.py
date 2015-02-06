@@ -98,7 +98,7 @@ class uCrm(Processor):
          'clientip': self.card['ip'],
          'saleorigin': self.card['orderpage'],
          'pid': self.card['pid'],
-         'offer': self.card['cacode'],
+         'offer': self.card['caid'],
          'caCode': self.card['cacode'],
          'affcode': self.card['affid'],
          'sfirstname': self.card['fname'],
